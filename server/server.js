@@ -10,6 +10,7 @@ const app = express();
 
 const corsOptions = {
   origin: 'http://localhost:3000', // Replace with your client's URL
+  methods: 'GET,POST,PUT,DELETE',
   credentials: true,
   optionsSuccessStatus: 200
 };
