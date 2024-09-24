@@ -1,0 +1,57 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 0px;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 32px;
+    color: #fff;
+    font-weight: 700;
+    margin-left: 100px;
+}
+
+.navicons {
+    color: black;
+    margin-right: 100px;
+    align-content: center;
+}
+
+.navlink {
+    position: relative;
+    margin-left: 30px;
+    color: black;
+    font-weight: 500;
+    font-size: 20px;
+    text-decoration: none; /* used to remove underline */
+}
+
+.navlink::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: black;
+    z-index: 10; 
+    transition: width 0.3s ease;
+}
+
+.navlink:hover::before {
+    width: 100%; 
+}
+
+.navbaricon {
+    margin-left: 30px;
+    width: 20px;
+    height: 20px;
+    color: black;
+}
