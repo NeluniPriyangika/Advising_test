@@ -16,10 +16,11 @@ const App = () => {
     <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login-page" element={<PrivateRoute><SeekerHomePage /></PrivateRoute>} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login-page" element={<LoginPage />} />
           <Route path="/advisor-home" element={<PrivateRoute><AdvisorHomePage /></PrivateRoute>} />
-          <Route path="/seeker-home" element={<PrivateRoute><SeekerHomePage /></PrivateRoute>} /></Routes>
+          <Route path="/seeker-home" element={<PrivateRoute><SeekerHomePage /></PrivateRoute> } />
+        </Routes>
       </Router>
     </GoogleOAuthProvider>
   );

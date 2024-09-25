@@ -28,16 +28,20 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Sign In</h2>
-      <button onClick={() => setUserType('advisor')}>Sign in as Advisor</button>
-      <button onClick={() => setUserType('seeker')}>Sign in as Seeker</button>
+      <div className="user-type-buttons">
+        <button onClick={() => setUserType('advisor')}>Sign in as Advisor</button>
+        <button onClick={() => setUserType('seeker')}>Sign in as Seeker</button>
+      </div>
       {userType && (
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={handleGoogleFailure}
-          useOneTap
-        />
+        <div className="google-login-button">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleFailure}
+            useOneTap
+          />
+        </div>
       )}
     </div>
   );
