@@ -1,16 +1,22 @@
 import React from 'react';
 import "./home.css";
 import Navbar from '../navbar/Navbar';
-import Advisor1 from "../../assets/Advisor1.jpg";
+//import Advisor1 from "../../assets/Advisor1.jpg";
 import Footer from '../footer/Footer';
+import ReadOnlyRating from '../readOnlyRating/ReadOnlyRating';
 
 
 const Card = (props) => (
   <div className="card">
-    <img src={ props.imgUrl } 
+    <div className='card-content1'>
+      <img src={ props.imgUrl } 
       alt={ props.alt || 'Image' } />
-    <div className="card-content">
+      <p>{props.timeText}</p>
+    </div>
+    <div className="card-content2">
       <h2>{ props.title }</h2>
+      <div>{props.homeRating}</div>
+      <p className='card-Subtitle'>"{props.subtitle}</p>
       <p>{ props.content }</p>
     </div>
   </div>
@@ -22,7 +28,10 @@ const CardContainer = (props) => (
       props.cards.map((card) => (
         <Card title={ card.title }
           content={ card.content }
-          imgUrl={ card.imgUrl } />
+          imgUrl={ card.imgUrl }
+          timeText = {card.timeText} 
+          homeRating = {card.homeRating}
+          subtitle = {card.subtitle}/>
       ))
     }
   </div>
@@ -33,16 +42,16 @@ const CardContainer = (props) => (
 function Home() {
 
   const cardsData = [
-    {id: 1, title: 'CARD 1', content: 'Clark Kent', imgUrl: 'https://unsplash.it/200/200'},
-    {id: 2, title: 'CARD 2', content: 'Bruce Wayne', imgUrl: 'https://unsplash.it/201/200'},
-    {id: 3, title: 'CARD 3', content: 'Peter Parker', imgUrl: 'https://unsplash.it/200/201'},
-    {id: 4, title: 'CARD 4', content: 'Tony Stark', imgUrl: 'https://unsplash.it/201/201'},
-    {id: 5, title: 'CARD 5', content: 'Reed Richards', imgUrl: 'https://unsplash.it/202/200'},
-    {id: 6, title: 'CARD 6', content: 'Wade Wilson', imgUrl: 'https://unsplash.it/200/199'},
-    {id: 7, title: 'CARD 7', content: 'Peter Quill', imgUrl: 'https://unsplash.it/199/199'},
-    {id: 8, title: 'CARD 8', content: 'Steven Rogers', imgUrl: 'https://unsplash.it/199/200'},
-    {id: 9, title: 'CARD 9', content: 'Bruce Banner', imgUrl: 'https://unsplash.it/200/198'},
-    {id: 10, title: 'CARD 10', content: 'Vincent Strange', imgUrl: 'https://unsplash.it/198/199'},
+    {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Clark Kent',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/200'},
+    {id: 2, homeRating:<ReadOnlyRating/>, title: 'Michel Jackson',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Bruce Wayne',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/201/200'},
+    {id: 3, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Peter Parker',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/201'},
+    {id: 4, homeRating:<ReadOnlyRating/>, title: 'Leo Doe',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Tony Stark',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/201/201'},
+    {id: 5, homeRating:<ReadOnlyRating/>, title: 'Kasun Gayantha',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Reed Richards',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/202/200'},
+    {id: 6, homeRating:<ReadOnlyRating/>, title: 'Neluni Priyangika',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Wade Wilson',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/199'},
+    {id: 7, homeRating:<ReadOnlyRating/>, title: 'Jony Dep',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Peter Quill',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/199/199'},
+    {id: 8, homeRating:<ReadOnlyRating/>, title: 'Karoline Jude',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Steven Rogers',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/199/200'},
+    {id: 9, homeRating:<ReadOnlyRating/>, title: 'Christine Jeo',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Bruce Banner',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/198'},
+    {id: 10, homeRating:<ReadOnlyRating/>, title: 'charle Jhosep',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Vincent Strange',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/198/199'},
   ]
 
   return (
