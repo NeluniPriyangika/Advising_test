@@ -17,7 +17,7 @@ const Card = (props) => (
       <h2>{ props.title }</h2>
       <div>{props.homeRating}</div>
       <p className='card-Subtitle'>"{props.subtitle}</p>
-      <p>{ props.content }</p>
+      <p className='personaldescription'>{ props.personalDes }</p>
     </div>
   </div>
 );
@@ -27,7 +27,7 @@ const CardContainer = (props) => (
     {
       props.cards.map((card) => (
         <Card title={ card.title }
-          content={ card.content }
+          personalDes={ card.personalDes }
           imgUrl={ card.imgUrl }
           timeText = {card.timeText} 
           homeRating = {card.homeRating}
@@ -42,16 +42,16 @@ const CardContainer = (props) => (
 function Home() {
 
   const cardsData = [
-    {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Clark Kent',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/200'},
-    {id: 2, homeRating:<ReadOnlyRating/>, title: 'Michel Jackson',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Bruce Wayne',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/201/200'},
-    {id: 3, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Peter Parker',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/201'},
-    {id: 4, homeRating:<ReadOnlyRating/>, title: 'Leo Doe',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Tony Stark',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/201/201'},
-    {id: 5, homeRating:<ReadOnlyRating/>, title: 'Kasun Gayantha',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Reed Richards',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/202/200'},
-    {id: 6, homeRating:<ReadOnlyRating/>, title: 'Neluni Priyangika',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Wade Wilson',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/199'},
-    {id: 7, homeRating:<ReadOnlyRating/>, title: 'Jony Dep',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Peter Quill',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/199/199'},
-    {id: 8, homeRating:<ReadOnlyRating/>, title: 'Karoline Jude',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Steven Rogers',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/199/200'},
-    {id: 9, homeRating:<ReadOnlyRating/>, title: 'Christine Jeo',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Bruce Banner',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/198'},
-    {id: 10, homeRating:<ReadOnlyRating/>, title: 'charle Jhosep',subtitle:'Psychic Reading, Astrology, Tarot Readings ', content: 'Vincent Strange',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/198/199'},
+    {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Clark Kent',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/200'},
+    {id: 2, homeRating:<ReadOnlyRating/>, title: 'Michel Jackson',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Bruce Wayne',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/201/200'},
+    {id: 3, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Peter Parker',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/201'},
+    {id: 4, homeRating:<ReadOnlyRating/>, title: 'Leo Doe',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Tony Stark',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/201/201'},
+    {id: 5, homeRating:<ReadOnlyRating/>, title: 'Kasun Gayantha',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Reed Richards',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/202/200'},
+    {id: 6, homeRating:<ReadOnlyRating/>, title: 'Neluni Priyangika',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Wade Wilson',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/199'},
+    {id: 7, homeRating:<ReadOnlyRating/>, title: 'Jony Dep',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Peter Quill',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/199/199'},
+    {id: 8, homeRating:<ReadOnlyRating/>, title: 'Karoline Jude',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Steven Rogers',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/199/200'},
+    {id: 9, homeRating:<ReadOnlyRating/>, title: 'Christine Jeo',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Bruce Banner',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/198'},
+    {id: 10, homeRating:<ReadOnlyRating/>, title: 'charle Jhosep',subtitle:'Psychic Reading, Astrology, Tarot Readings ', personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Vincent Strange',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/198/199'},
   ]
 
   return (

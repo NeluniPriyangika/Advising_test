@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "./navbar.css";
 import { BsChatDotsFill } from "react-icons/bs";
 import { BiSolidUser } from "react-icons/bi";
@@ -6,6 +6,23 @@ import LoginPage from '../../pages/loginPage/LoginPage';
 
 function Navbar() {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleJoinUsClick = () => {
     setShowLoginPopup(true);
@@ -16,7 +33,7 @@ function Navbar() {
   };
 
   return (
-    <header className='header'>
+    <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <a href="/" className='logo'>logo</a>
       
       <nav className='navbar'>

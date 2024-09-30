@@ -4,11 +4,16 @@
     left: 0;
     width: 100%;
     padding: 10px 0px;
-    background: transparent;
+    background: rgba(206, 60, 118, 0.1);
+    transition: background-color 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 100;
+}
+
+.header.scrolled {
+  background-color: #232323;
 }
 
 .logo {
@@ -19,7 +24,7 @@
 }
 
 .navicons {
-    color: black;
+    color: rgb(255, 255, 255);
     margin-right: 100px;
     align-content: center;
 }
@@ -27,7 +32,7 @@
 .navlink {
     position: relative;
     margin-left: 30px;
-    color: black;
+    color: rgb(255, 255, 255);
     font-weight: 500;
     font-size: 20px;
     text-decoration: none; /* used to remove underline */
@@ -40,7 +45,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background-color: black;
+    background-color: rgb(255, 255, 255);
     z-index: 10; 
     transition: width 0.3s ease;
 }
@@ -103,7 +108,7 @@
     margin-left: 30px;
     width: 20px;
     height: 20px;
-    color: black;
+    color: rgb(255, 255, 255);
 }
 
 .popup-overlay {
