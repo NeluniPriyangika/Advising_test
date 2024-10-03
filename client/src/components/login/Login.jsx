@@ -1,30 +1,41 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
-
 
 const Login = () => {
-  const [userType, setUserType] = useState('');
+  const [userType, setUserType] = useState(null);
+  const navigate = useNavigate();
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/google-login', {
-        credential: credentialResponse.credential,
-        userType,
+      const res = await fetch('http://localhost:5000/api/auth/google-login', {
+        method: 'POST',
+        body: JSON.stringify({
+          credential: credentialResponse.credential,
+          userType: userType,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
-      // Store user data in localStorage or context
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const data = await res.json();
+      if (data.user) {
+        // Save user data to your app's state or localStorage
+        localStorage.setItem('user', JSON.stringify(data.user));
 
-      // Redirect based on user type
-      window.location.href = res.data.redirectTo;
+        // Redirect based on the server's response
+        navigate(data.redirectTo);
+      }
     } catch (error) {
       console.error('Login error:', error);
+      // Handle error (e.g., show error message to user)
     }
   };
 
-  const handleGoogleFailure = () => {
-    console.error('Google Sign-In was unsuccessful. Try again later');
+  const handleGoogleFailure = (error) => {
+    console.error('Google Login failed', error);
+    // Handle the error (e.g., show an error message to the user)
   };
 
   return (

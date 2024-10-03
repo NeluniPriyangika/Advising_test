@@ -20,10 +20,31 @@ const userSchema = new mongoose.Schema({
     enum: ['advisor', 'seeker'],
     required: true,
   },
+  fullName: String,
+  address: String,
+  perMinuteRate: {
+    amount: Number,
+    minutes: Number,
+    currency: {
+      type: String,
+      default: 'USD'
+    }
+  },
+  description: String,
+  profilePhotoUrl: String,
+  phoneNumber: String,
+  employmentInfo: String,
+  profileCompleted: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = mongoose.model('User', userSchema);
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
