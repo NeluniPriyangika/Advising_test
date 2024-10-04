@@ -1,0 +1,116 @@
+.advisor-profile-update-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.advisor-profile-update-tittle{
+    margin-top: 80px;
+}
+
+.advisor-profile-update-container input{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 600px;
+    height: 40px;
+    margin-top: 20px;
+}
+
+.advisor-profile-update-perminutesrate{
+    display: flex;
+    flex-direction: row;
+    width: 608px;
+    align-items: flex-start;
+    height: 46px;
+}
+
+.advisor-profile-update-perminutesrate input{
+    width: 200px;
+    margin-right: 20px;
+}
+
+.advisor-profile-update-perminutesrate select{
+    height: 46px;
+    margin-top: 20px;
+}
+
+.advisor-profile-update-description{
+    width: 602px;
+    height: 40px;
+    margin-top: 45px;
+}
+
+.profileUpdatebutton {
+    margin-top: 20px;
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 7px;
+    border: 1px solid rgb(255, 106, 0);
+    font-size: 14px;
+    font-family: "Roboto";
+    font-weight: 600;
+    background: transparent;
+    color: rgb(5, 5, 5);
+    overflow: hidden;
+    box-shadow: 0 0 0 0 transparent;
+    -webkit-transition: all 0.2s ease-in;
+    -moz-transition: all 0.2s ease-in;
+    transition: all 0.2s ease-in;
+  }
+  
+.profileUpdatebutton:hover {
+    background: rgb(247, 130, 47);
+    box-shadow: 0 0 30px 5px rgb(255, 106, 0);
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+  }
+  
+.profileUpdatebutton:hover::before {
+    -webkit-animation: sh02 0.5s 0s linear;
+    -moz-animation: sh02 0.5s 0s linear;
+    animation: sh02 0.5s 0s linear;
+  }
+  
+.profileUpdatebutton::before {
+    content: '';
+    display: block;
+    width: 0px;
+    height: 86%;
+    position: absolute;
+    top: 7%;
+    left: 0%;
+    opacity: 0;
+    background: #fff;
+    box-shadow: 0 0 50px 30px #fff;
+    -webkit-transform: skewX(-20deg);
+    -moz-transform: skewX(-20deg);
+    -ms-transform: skewX(-20deg);
+    -o-transform: skewX(-20deg);
+    transform: skewX(-20deg);
+  }
+  
+  @keyframes sh02 {
+    from {
+      opacity: 0;
+      left: 0%;
+    }
+  
+    50% {
+      opacity: 1;
+    }
+  
+    to {
+      opacity: 0;
+      left: 100%;
+    }
+  }
+  
+.profileUpdatebutton:active {
+    box-shadow: 0 0 0 0 transparent;
+    -webkit-transition: box-shadow 0.2s ease-in;
+    -moz-transition: box-shadow 0.2s ease-in;
+    transition: box-shadow 0.2s ease-in;
+  }
+  

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import "./advisorUpdateProfile.css";
 import { useNavigate } from 'react-router-dom';
 
 const AdvisorUpdateProfile = () => {
@@ -91,7 +92,8 @@ const AdvisorUpdateProfile = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className='advisor-profile-update-container' onSubmit={handleSubmit}>
+      <h1 className='advisor-profile-update-tittle'>Update Your Profile</h1>
       <input
         type="text"
         name="fullName"
@@ -107,7 +109,7 @@ const AdvisorUpdateProfile = () => {
         onChange={handleInputChange}
         placeholder="Address"
       />
-      <div>
+      <div className='advisor-profile-update-perminutesrate'>
         <input
           type="number"
           name="minutes"
@@ -138,23 +140,30 @@ const AdvisorUpdateProfile = () => {
           <option value="GBP">GBP</option>
         </select>
       </div>
-      <textarea
+      <textarea 
+        className='advisor-profile-update-description'
         name="description"
         value={profileData.description}
         onChange={handleInputChange}
         placeholder="Description"
+        required
       />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handlePhotoChange}
-      />
+      <label htmlFor=""> 
+        <h4>Add your Profile Photo</h4>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoChange}
+          aria-labelledby="firstname"
+        />
+      </label>      
       <input
         type="tel"
         name="phoneNumber"
         value={profileData.phoneNumber}
         onChange={handleInputChange}
         placeholder="Phone Number"
+        required
       />
       <input
         type="email"
@@ -171,7 +180,7 @@ const AdvisorUpdateProfile = () => {
         onChange={handleInputChange}
         placeholder="Employment Info"
       />
-      <button type="submit">Update Profile</button>
+      <button  className='profileUpdatebutton' type="submit">Update Profile</button>
     </form>
   );
 };
