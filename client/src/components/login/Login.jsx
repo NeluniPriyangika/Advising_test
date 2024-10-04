@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import './login.css';
 import { useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import GoogleLogo from '../../assets/googlelogo.png';
 
 const Login = () => {
   const [userType, setUserType] = useState(null);
@@ -40,10 +42,10 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <h2>Sign In</h2>
+      <h2 className='signintitle'>Sign In</h2>
       <div className="user-type-buttons">
-        <button onClick={() => setUserType('advisor')}>Sign in as Advisor</button>
-        <button onClick={() => setUserType('seeker')}>Sign in as Seeker</button>
+        <button className='user-type-button' onClick={() => setUserType('advisor')}><img className='googleSignInImag' src={GoogleLogo} alt=''/> Sign in as Advisor</button>
+        <button className="user-type-button" onClick={() => setUserType('seeker')}><img className='googleSignInImag' src={GoogleLogo} alt=''/>Sign in as Seeker</button>
       </div>
       {userType && (
         <div className="google-login-button">

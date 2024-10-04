@@ -3,6 +3,7 @@ import "./navbar.css";
 import { BsChatDotsFill } from "react-icons/bs";
 import { BiSolidUser } from "react-icons/bi";
 import LoginPage from '../../pages/loginPage/LoginPage';
+import Logo from "../../assets/logo.png";
 
 function Navbar() {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
@@ -53,6 +54,7 @@ function Navbar() {
         <div className="popup-overlay">
           <div className="popup-content">
             <button className="close-button" onClick={handleClosePopup}>×</button>
+            <img src={Logo} alt="" />
             <LoginPage />
           </div>
         </div>
