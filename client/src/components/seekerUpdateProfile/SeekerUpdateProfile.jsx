@@ -73,44 +73,47 @@ const SeekerUpdateProfile = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="fullName"
-        value={profileData.fullName}
-        onChange={handleInputChange}
-        placeholder="Full Name"
-        required
-      />
-      <input
-        type="text"
-        name="address"
-        value={profileData.address}
-        onChange={handleInputChange}
-        placeholder="Address"
-      />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handlePhotoChange}
-      />
-      <input
-        type="tel"
-        name="phoneNumber"
-        value={profileData.phoneNumber}
-        onChange={handleInputChange}
-        placeholder="Phone Number"
-      />
-      <input
-        type="email"
-        name="email"
-        value={profileData.email}
-        onChange={handleInputChange}
-        placeholder="Email"
-        required
-      />
-      <button type="submit">Update Profile</button>
-    </form>
+    <div>
+      <div></div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          name="fullName"
+          value={profileData.fullName}
+          onChange={handleInputChange}
+          placeholder="Full Name"
+          required
+        />
+        <input
+          type="text"
+          name="address"
+          value={profileData.address}
+          onChange={handleInputChange}
+          placeholder="Address"
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoChange}
+        />
+        <input
+          type="tel"
+          name="phoneNumber"
+          value={profileData.phoneNumber}
+          onChange={handleInputChange}
+          placeholder="Phone Number"
+        />
+        <input
+          type="email"
+          name="email"
+          value={profileData.email}
+          onChange={handleInputChange}
+          placeholder="Email"
+          required
+        />
+        <button type="submit">Update Profile</button>
+      </form>
+    </div>
   );
 };
 

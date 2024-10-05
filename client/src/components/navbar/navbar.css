@@ -5,7 +5,7 @@
     width: 100%;
     padding: 10px 0px;
     background: rgba(206, 60, 118, 0.1);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.1s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -54,7 +54,6 @@
     width: 100%; 
 }
 
-/* From Uiverse.io by cssbuttons-io */ 
 .joinusButton {
     position: relative;
     font-size: 17px;
