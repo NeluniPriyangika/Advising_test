@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./advisorUpdateProfile.css";
+import TimezoneSelect from 'react-timezone-select';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer'; 
@@ -7,18 +8,30 @@ import Footer from '../footer/Footer';
 const AdvisorUpdateProfile = () => {
   const [profileData, setProfileData] = useState({
     fullName: '',
+    displayName: '',
+    qualifications: '',
+    certifications: '',
+    description: '',
     address: '',
     perMinuteRate: {
       amount: 0,
-      minutes: 0,
       currency: 'USD'
     },
-    description: '',
+    timeZone: {},
+    availableDays: [],
+    availableHoursstart: '',
+    availableHoursend: '',
+    languages: '',
     phoneNumber: '',
     email: '',
-    employmentInfo: '',
+    socialLinks: {
+      facebook: '',
+      linkedin: '',
+      twitter: ''
+    },
   });
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [selectedTimezone, setSelectedTimezone] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,11 +52,36 @@ const AdvisorUpdateProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfileData(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+  
+    if (name.startsWith('socialLinks.')) {
+      // Handle nested socialLinks field update
+      const field = name.split('.')[1]; // Extract the key (facebook, linkedin, twitter)
+      setProfileData((prevData) => ({
+        ...prevData,
+        socialLinks: {
+          ...prevData.socialLinks,
+          [field]: value,
+        }
+      }));
+    } else if (name === 'phoneNumber') {
+      // Automatically prepend the "+" sign if it's not there
+      let formattedValue = value;
+      if (!formattedValue.startsWith("+")) {
+        formattedValue = "+" + formattedValue;
+      }
+      setProfileData((prevData) => ({
+        ...prevData,
+        [name]: formattedValue,
+      }));
+    } else {
+      // Handle other fields
+      setProfileData((prevData) => ({
+        ...prevData,
+        [name]: value
+      }));
+    }
   };
+  
 
   const handleRateChange = (e) => {
     const { name, value } = e.target;
@@ -65,12 +103,14 @@ const AdvisorUpdateProfile = () => {
     const formData = new FormData();
     
     Object.keys(profileData).forEach(key => {
-      if (key === 'perMinuteRate') {
+      if (key === 'perMinuteRate' || key === 'socialLinks') {
         formData.append(key, JSON.stringify(profileData[key]));
       } else {
         formData.append(key, profileData[key]);
       }
     });
+
+    formData.append('timeZone', selectedTimezone.value);
 
     if (profilePhoto) {
       formData.append('profilePhoto', profilePhoto);
@@ -122,6 +162,41 @@ const AdvisorUpdateProfile = () => {
             placeholder="Full Name"
             required
           />
+
+          <input
+            type="text"
+            name="displayName"
+            value={profileData.displayName}
+            onChange={handleInputChange}
+            placeholder="Display Name"
+            required
+          />
+
+          <input
+            type="text"
+            name="qualifications"
+            value={profileData.qualifications}
+            onChange={handleInputChange}
+            placeholder="Professional Qualifications"
+          />
+
+          <input
+            type="text"
+            name="certifications"
+            value={profileData.certifications}
+            onChange={handleInputChange}
+            placeholder="Certifications and other qualifications"
+          />
+
+          <textarea 
+            className='advisor-profile-update-description'
+            name="description"
+            value={profileData.description}
+            onChange={handleInputChange}
+            placeholder="Short Bio or Description"
+            required
+          />
+
           <input
             type="text"
             name="address"
@@ -129,45 +204,28 @@ const AdvisorUpdateProfile = () => {
             onChange={handleInputChange}
             placeholder="Address"
           />
+
           <div className='advisor-profile-update-perminutesrate'>
-            <input
-              type="number"
-              name="minutes"
-              value={profileData.perMinuteRate.minutes}
-              onChange={handleRateChange}
-              placeholder="Minutes"
-              step="0.01"
-              min="0"
-              required
-            />
             <input
               type="number"
               name="amount"
               value={profileData.perMinuteRate.amount}
               onChange={handleRateChange}
-              placeholder="Per Minute Rate"
+              placeholder="Rate per Minute"
               step="1"
               min="1"
               required
             />
+            <span>1 min/USD</span>
             <select
               name="currency"
               value={profileData.perMinuteRate.currency}
               onChange={handleRateChange}
             >
               <option value="USD">USD</option>
-              <option value="EUR">EUR</option>
-              <option value="GBP">GBP</option>
             </select>
           </div>
-          <textarea 
-            className='advisor-profile-update-description'
-            name="description"
-            value={profileData.description}
-            onChange={handleInputChange}
-            placeholder="Description"
-            required
-          />
+
           <label htmlFor=""> 
             <h4>Add your Profile Photo</h4>
             <input
@@ -176,7 +234,8 @@ const AdvisorUpdateProfile = () => {
               onChange={handlePhotoChange}
               aria-labelledby="firstname"
             />
-          </label>      
+          </label> 
+
           <input
             type="tel"
             name="phoneNumber"
@@ -185,6 +244,7 @@ const AdvisorUpdateProfile = () => {
             placeholder="Phone Number"
             required
           />
+
           <input
             type="email"
             name="email"
@@ -193,13 +253,81 @@ const AdvisorUpdateProfile = () => {
             placeholder="Email"
             required
           />
+          
+          <label htmlFor="timeZone">Select Time Zone</label>
+          <TimezoneSelect
+            value={selectedTimezone}
+            onChange={setSelectedTimezone}
+          />
+
+          <div className='available-days'>
+            <label>Available Days</label>
+            {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
+              <div key={day}>
+                <input
+                  type="checkbox"
+                  name="availableDays"
+                  value={day}
+                  onChange={handleInputChange}
+                />
+                {day}
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <h4>Add your Available Hours</h4>
+            <input
+              type="time"
+              name="availableHoursstart"
+              value={profileData.availableHoursstart}
+              onChange={handleInputChange}
+              placeholder="Available Hours Start"
+              required
+            />
+            <h6>to</h6> 
+            <input
+              type="time"
+              name="availableHoursend"
+              value={profileData.availableHoursend}
+              onChange={handleInputChange}
+              placeholder="Available Hours End"
+              required
+            />
+          </div>
+
           <input
             type="text"
-            name="employmentInfo"
-            value={profileData.employmentInfo}
+            name="languages"
+            value={profileData.languages}
             onChange={handleInputChange}
-            placeholder="Employment Info"
+            placeholder="Languages"
+            required
           />
+
+          <h3>Social Links</h3>
+          <input
+            type="text"
+            name="socialLinks.facebook"
+            value={profileData.socialLinks.facebook}
+            onChange={handleInputChange}
+            placeholder="Facebook URL"
+          />
+          <input
+            type="text"
+            name="socialLinks.linkedin"
+            value={profileData.socialLinks.linkedin}
+            onChange={handleInputChange}
+            placeholder="LinkedIn URL"
+          />
+          <input
+            type="text"
+            name="socialLinks.twitter"
+            value={profileData.socialLinks.twitter}
+            onChange={handleInputChange}
+            placeholder="Twitter URL"
+          />
+
           <button  className='profileUpdatebutton' type="submit">Update Profile</button>
         </form>
         <div className='advisor-profile-update-advantagesasAdvisor'>

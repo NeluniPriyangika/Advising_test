@@ -18,28 +18,44 @@ const upload = multer({ storage: storage });
 
 router.post('/update-advisor-profile', upload.single('profilePhoto'), async (req, res) => {
   try {
-    const { fullName, address, perMinuteRate, description, phoneNumber, email, employmentInfo } = req.body;
+    //const userId = req.user._id;
+
+    const { fullName, displayName, qualifications, certifications, description, 
+      perMinuteRate, timeZone, availableDays, availableHoursstart,availableHoursend, languages, 
+      phoneNumber, socialLinks , address, email } = req.body;
+
+    //const profilePhoto = req.file ? req.file.path : undefined;
 
     // TODO: Replace this with actual user authentication
     // For now, we'll just use the email to find the user
+
     const user = await User.findOne({ email: email });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    user.fullName = fullName;
-    user.address = address;
-    user.perMinuteRate = JSON.parse(perMinuteRate);
-    user.description = description;
-    user.phoneNumber = phoneNumber;
-    user.employmentInfo = employmentInfo;
-    user.profileCompleted = true;
+      user.fullName = fullName;
+      user.email = email;
+      user.address= address;
+      user.displayName = displayName;
+      user.qualifications = qualifications;
+      user.certifications = certifications;
+      user.description = description;
+      user.perMinuteRate = JSON.parse(perMinuteRate); // Parsing as it's sent as a JSON string
+      user.timeZone = timeZone,
+      user.availableDays = Array.isArray(availableDays) ? availableDays : availableDays.split(',');
+      user.availableHoursstart = availableHoursstart;
+      user.availableHoursend = availableHoursend;
+      user.languages = languages;
+      user.phoneNumber = phoneNumber;
+      user.socialLinks = JSON.parse(socialLinks)
+    
 
     if (req.file) {
-      user.profilePhotoUrl = `/uploads/${req.file.filename}`;
+        user.profilePhotoUrl = `/uploads/${req.file.filename}`;
     }
-
+  
     await user.save();
 
     res.json({ success: true, user: user });
