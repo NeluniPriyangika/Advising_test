@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import './seekerUpdateProfile.css';
 import { useNavigate } from 'react-router-dom';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
+import Navbar from '../navbar/Navbar';
+import Footer from '../footer/Footer';
 
 const SeekerUpdateProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -96,7 +99,8 @@ const SeekerUpdateProfile = () => {
   };
 
   return (
-    <div>
+    <div className='seeker-updateprofile-main'>
+      <Navbar/>
       <div></div>
       <form onSubmit={handleSubmit}>
         <input
@@ -174,6 +178,7 @@ const SeekerUpdateProfile = () => {
 
         <button type="submit">Update Profile</button>
       </form>
+      <Footer/>
     </div>
   );
 };
