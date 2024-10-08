@@ -172,7 +172,7 @@ const AdvisorUpdateProfile = () => {
             required
           />
 
-          <input
+          <textarea
             type="text"
             name="qualifications"
             value={profileData.qualifications}
@@ -180,7 +180,7 @@ const AdvisorUpdateProfile = () => {
             placeholder="Professional Qualifications"
           />
 
-          <input
+          <textarea
             type="text"
             name="certifications"
             value={profileData.certifications}
@@ -233,6 +233,7 @@ const AdvisorUpdateProfile = () => {
               accept="image/*"
               onChange={handlePhotoChange}
               aria-labelledby="firstname"
+              required
             />
           </label> 
 
@@ -269,6 +270,7 @@ const AdvisorUpdateProfile = () => {
                   name="availableDays"
                   value={day}
                   onChange={handleInputChange}
+                  required
                 />
                 {day}
               </div>
