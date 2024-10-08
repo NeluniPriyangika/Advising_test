@@ -113,6 +113,7 @@ const SeekerUpdateProfile = () => {
           value={profileData.address}
           onChange={handleInputChange}
           placeholder="Address"
+          required
         />
  
         <input
@@ -144,6 +145,7 @@ const SeekerUpdateProfile = () => {
           showYearDropdown
           showMonthDropdown
           scrollableYearDropdown
+          required
         />
 
         <textarea 
@@ -152,7 +154,6 @@ const SeekerUpdateProfile = () => {
             value={profileData.description}
             onChange={handleInputChange}
             placeholder="Short Bio or Description"
-            required
         />
 
         <input
@@ -161,12 +162,14 @@ const SeekerUpdateProfile = () => {
             value={profileData.language}
             onChange={handleInputChange}
             placeholder="Language"
+            required
         />
 
         <input
           type="file"
           accept="image/*"
           onChange={handlePhotoChange}
+          required
         />
 
         <button type="submit">Update Profile</button>
