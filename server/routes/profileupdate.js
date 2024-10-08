@@ -49,7 +49,8 @@ router.post('/update-advisor-profile', upload.single('profilePhoto'), async (req
       user.availableHoursend = availableHoursend;
       user.languages = languages;
       user.phoneNumber = phoneNumber;
-      user.socialLinks = JSON.parse(socialLinks)
+      user.socialLinks = JSON.parse(socialLinks);
+      user.profileCompleted = true;
     
 
     if (req.file) {
