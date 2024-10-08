@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 
 const SeekerUpdateProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -7,6 +9,10 @@ const SeekerUpdateProfile = () => {
     address: '',
     phoneNumber: '',
     email: '',
+    description: '',
+    language : '',
+    birthday : ''
+
   });
   const [profilePhoto, setProfilePhoto] = useState(null);
   const navigate = useNavigate();
@@ -29,9 +35,30 @@ const SeekerUpdateProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProfileData(prevData => ({
+
+    if (name === 'phoneNumber') {
+      // Automatically prepend the "+" sign if it's not there
+      let formattedValue = value;
+      if (!formattedValue.startsWith("+")) {
+        formattedValue = "+" + formattedValue;
+      }
+      setProfileData((prevData) => ({
+        ...prevData,
+        [name]: formattedValue,
+      }));
+    } else {
+      // Handle other fields
+      setProfileData((prevData) => ({
+        ...prevData,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleDateChange = (date) => {
+    setProfileData((prevData) => ({
       ...prevData,
-      [name]: value
+      birthday: date
     }));
   };
 
@@ -44,16 +71,12 @@ const SeekerUpdateProfile = () => {
     const formData = new FormData();
     
     Object.keys(profileData).forEach(key => {
-      if (key === 'perMinuteRate') {
-        formData.append(key, JSON.stringify(profileData[key]));
-      } else {
-        formData.append(key, profileData[key]);
-      }
+      formData.append(key, profileData[key]);
     });
 
     if (profilePhoto) {
       formData.append('profilePhoto', profilePhoto);
-    }
+    }  
 
     try {
       const res = await fetch('http://localhost:5000/api/update-seeker-profile', {
@@ -91,18 +114,18 @@ const SeekerUpdateProfile = () => {
           onChange={handleInputChange}
           placeholder="Address"
         />
+ 
         <input
-          type="file"
-          accept="image/*"
-          onChange={handlePhotoChange}
+            type="tel"
+            name="phoneNumber"
+            value={profileData.phoneNumber}
+            onChange={handleInputChange}
+            placeholder="Phone Number"
+            required
         />
-        <input
-          type="tel"
-          name="phoneNumber"
-          value={profileData.phoneNumber}
-          onChange={handleInputChange}
-          placeholder="Phone Number"
-        />
+
+        <h4>Add your registerd email</h4>
+
         <input
           type="email"
           name="email"
@@ -111,6 +134,41 @@ const SeekerUpdateProfile = () => {
           placeholder="Email"
           required
         />
+
+
+        <DatePicker
+          selected={profileData.birthday}
+          onChange={handleDateChange}
+          dateFormat="yyyy-MM-dd"
+          placeholderText="Select Birthday"
+          showYearDropdown
+          showMonthDropdown
+          scrollableYearDropdown
+        />
+
+        <textarea 
+            className='seeker-profile-update-description'
+            name="description"
+            value={profileData.description}
+            onChange={handleInputChange}
+            placeholder="Short Bio or Description"
+            required
+        />
+
+        <input
+            type="text"
+            name="language"
+            value={profileData.language}
+            onChange={handleInputChange}
+            placeholder="Language"
+        />
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoChange}
+        />
+
         <button type="submit">Update Profile</button>
       </form>
     </div>

@@ -233,7 +233,6 @@ const AdvisorUpdateProfile = () => {
               accept="image/*"
               onChange={handlePhotoChange}
               aria-labelledby="firstname"
-              required
             />
           </label> 
 
@@ -245,6 +244,8 @@ const AdvisorUpdateProfile = () => {
             placeholder="Phone Number"
             required
           />
+
+          <h4>Add your Registered email address</h4>
 
           <input
             type="email"
@@ -270,7 +271,6 @@ const AdvisorUpdateProfile = () => {
                   name="availableDays"
                   value={day}
                   onChange={handleInputChange}
-                  required
                 />
                 {day}
               </div>

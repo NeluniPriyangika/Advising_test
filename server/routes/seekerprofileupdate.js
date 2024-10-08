@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
 
 router.post('/update-seeker-profile', upload.single('profilePhoto'), async (req, res) => {
   try {
-    const { fullName, address, phoneNumber, email } = req.body;
+    const { fullName, address, phoneNumber, email, description, language, birthday } = req.body;
 
     // TODO: Replace this with actual user authentication
     // For now, we'll just use the email to find the user
@@ -32,6 +32,9 @@ router.post('/update-seeker-profile', upload.single('profilePhoto'), async (req,
     user.address = address;
     user.phoneNumber = phoneNumber;
     user.profileCompleted = true;
+    user.description = description;
+    user.languages = language;
+    user.birthday = birthday;
 
     if (req.file) {
       user.profilePhotoUrl = `/uploads/${req.file.filename}`;

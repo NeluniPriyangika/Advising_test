@@ -75,6 +75,9 @@ const userSchema = new mongoose.Schema({
     linkedin: { type: String },
     twitter: { type: String },
   },
+  birthday: {
+    type: Date,  // Store the birthday as a Date object
+  },
   profileCompleted: {
     type: Boolean,
     default: false,
