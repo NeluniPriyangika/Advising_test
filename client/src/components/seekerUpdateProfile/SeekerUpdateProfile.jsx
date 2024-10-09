@@ -5,9 +5,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
-import Seeker1 from '../../assets/seeker1.png';
-import Seeker2 from '../../assets/seeker2.png';
-import Seeker3 from '../../assets/seeker3.png';
 import ReadOnlyRating from '../readOnlyRating/ReadOnlyRating';
 
 
@@ -133,10 +130,13 @@ const SeekerUpdateProfile = () => {
         navigate('/seeker-home');
       } else {
         // Handle error
+        alert(`Profile update failed: ${data.error || 'An unknown error occurred.'}`);
         console.error('Profile update failed:', data.error);
       }
     } catch (error) {
       console.error('Error updating profile:', error);
+      alert('Error updating profile. Please try again later.');
+
     }
   };
 
@@ -228,14 +228,14 @@ const SeekerUpdateProfile = () => {
 
             <h4>Add your Profile Picture</h4>
 
-            <label htmlFor="">
-              <input
+           
+            <input
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoChange}
                 required
-              />
-            </label>
+            />
+
 
             <button className='seeker-profile-update-button' type="submit">Update Profile</button>
           </form>
@@ -243,7 +243,51 @@ const SeekerUpdateProfile = () => {
         </div>
   
         <div className='seeker-updateprofile-rightcontainer'>
-          right
+          <h3>Advantages of Being a Seeker</h3>
+          <div className='seekerAdvantage-container'>
+            <div className='seekerAdvantatges'>
+              <h4>Access to Expert Advice</h4>
+              <p>Connect with top professionals across various fields,
+                 and get personalized advice tailored to your specific needs.</p>
+            </div>
+
+            <div className='seekerAdvantatges'>
+              <h4>Flexible Communication</h4>
+              <p>Choose how you want to communicate—whether 
+                through chat, video, or voice calls—at times that suit your schedule.</p>
+            </div>
+
+            <div className='seekerAdvantatges'>
+              <h4>Find the Right Advisor</h4>
+              <p>Browse a wide range of Advisors with diverse expertise, 
+                ensuring you get the best match for your unique
+              situation.</p>
+            </div>
+
+            <div className='seekerAdvantatges'>
+              <h4>Pay-As-You-Go</h4>
+              <p>Only pay for the time you use. You’re charged per minute, 
+                giving you control over how much you spend.</p>
+            </div>
+
+            <div className='seekerAdvantatges'>
+              <h4>Set Your Own Goals</h4>
+              <p>Get advice that helps you achieve personal and
+              professional goals, from career advancement to personal growth.</p>
+            </div>
+
+            <div className='seekerAdvantatges'>
+              <h4>Global Reach</h4>
+              <p>Access Advisors from around the world, giving you
+              insights from different perspectives and industries. </p>
+            </div>
+
+            <div className='seekerAdvantatges'>
+              <h4>Confidential and Secure</h4>
+              <p>All your interactions are private and secure, ensuring
+              you can seek advice with confidence.</p>
+            </div>
+          </div>
         </div>
 
       </div>

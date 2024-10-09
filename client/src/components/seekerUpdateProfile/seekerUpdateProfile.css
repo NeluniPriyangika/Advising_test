@@ -124,18 +124,6 @@
   padding-right: 10px;
 }
 
-
-.seeker-updateprofile-rightcontainer{
-  background-color: #462c22;
-  width: 300px;
-  color: white;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px; 
-  border-top-left-radius:40px; 
-}
-
 .seeker-updateprofile-form-container{
   display: flex;
   flex-direction: column;
@@ -183,6 +171,11 @@
   width: 750px;
 }
 
+.seeker-updateprofile-form textarea:hover{
+  background: #bb836b;
+  border: none;
+}
+
 .seeker-updateprofile-form textarea::placeholder{
   color: white;
   font-family: 'Lucida Sans Regular';
@@ -195,15 +188,6 @@
   width: 750px;
 }
 
-.seeker-profilepic-button{
-  cursor: pointer;
-  background: transparent;
-  border-color: white;
-  border-radius: 10px;
-  color: white;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-}
-  
 .seeker-profile-update-button{
   height: 40px;
   background: transparent;
@@ -256,3 +240,73 @@
   transform: scaleX(1.4) scaleY(1.6);
   opacity: 0;
 }
+
+.seeker-updateprofile-rightcontainer{
+  background-color: #462c22;
+  width: 300px;
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px; 
+  border-top-left-radius:40px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.seeker-updateprofile-rightcontainer h3{
+  text-transform: uppercase;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+.seekerAdvantage-container{
+  display: flex;
+  height: 600px;
+  flex-direction: column;
+    border-radius: 6px;
+    color: #333;
+    background: #462c22;
+    padding: 1rem;
+    box-shadow: 0 0 1rem rgb(107, 73, 23) inset;
+    overflow-x: auto;
+    position: relative;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+}
+
+.seekerAdvantatges{
+  display: flex;
+  flex: 1 0 150px;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 1rem -4px #000;
+  background: #ffffff;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 250ms ease-in-out;
+        
+  &:hover {
+      box-shadow: 0 4px 1rem -4px #000;
+      transform: translateY(-3px);
+  }
+}
+
+.seekerAdvantatges h4{
+  text-align: center;
+  text-decoration:underline;
+}
+
+.seekerAdvantatges p {
+  margin-left: 12px;
+  margin-right: 12px;
+  font-size: 13px;
+  text-align: justify;
+}
+
