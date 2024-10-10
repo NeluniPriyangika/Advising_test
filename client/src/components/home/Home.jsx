@@ -59,10 +59,10 @@ function Home() {
         <Navbar />
         <div className='homebgimage'>
             <div className='homemaintext'>
-                <div className='welcometext'>
-                    WELCOME</div>
-                <div className='username'>To the ...</div>
+                <div className='welcometext'>WELCOME</div>
+                <div className='username'>To</div>
             </div>
+            <h1 className='sitename'>Spiritual Insights</h1>
         </div> 
         <div className='home-find-advisors-container'>
           <div className="home-find-advisors-container-card-container">

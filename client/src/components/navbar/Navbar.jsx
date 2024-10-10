@@ -35,7 +35,8 @@ function Navbar() {
 
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
-      <a href="/" className='logo'>logo</a>
+      
+      <a href="/"><img className="logo-navbar" src={Logo} alt="" /></a>
       
       <nav className='navbar'>
         <a href="/" className='navlink'>Explore Advisors</a>

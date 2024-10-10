@@ -90,10 +90,6 @@
   }
 }
 
-.seekerReviews-content1{
- 
-}
-
 .seekerReviews-content2{
   width: 200px;
 }
@@ -101,14 +97,13 @@
 .seekerReviews-desc{
   font-size: 12px;
   overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: justify;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; 
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: justify;
 }
 
 .seekerReviews-content2 h2{
@@ -130,6 +125,8 @@
   align-items: center;
   justify-items: center;
   width: 850px;
+  background-color:rgba(248, 166, 91, 0.5);
+  border-radius: 40px;
 }
 
 .seeker-updateprofile-form{
@@ -145,19 +142,19 @@
   background: transparent;
   margin-top: 20px;
   border-radius: 10px;
-  color: white;
+  color: rgb(0, 0, 0);
   font-family: 'Lucida Sans Regular';
-  border-color: white;
+  border-color: rgb(0, 0, 0);
   width: 750px;
 }
 
 .seeker-updateprofile-form input::placeholder {
-  color: white;
+  color: rgb(0, 0, 0);
   font-family: 'Lucida Sans Regular';
 }
 
 .seeker-updateprofile-form input:hover{
-  background: #bb836b;
+  background: #ffffff;
   border: none;
 }
 
@@ -167,23 +164,23 @@
   margin-top: 20px;
   border-radius: 10px;
   font-family: 'Lucida Sans Regular';
-  border-color: white;
+  border-color: rgb(0, 0, 0);
   width: 750px;
 }
 
 .seeker-updateprofile-form textarea:hover{
-  background: #bb836b;
+  background: #ffffff;
   border: none;
 }
 
 .seeker-updateprofile-form textarea::placeholder{
-  color: white;
+  color: rgb(0, 0, 0);
   font-family: 'Lucida Sans Regular';
 }
 
 .seeker-updateprofile-form h4{
   margin-top: 40px;
-  color: white;
+  color: rgb(0, 0, 0);
   font-family: 'Lucida Sans Regular';
   width: 750px;
 }

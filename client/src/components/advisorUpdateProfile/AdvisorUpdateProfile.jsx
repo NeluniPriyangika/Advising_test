@@ -154,183 +154,205 @@ const AdvisorUpdateProfile = () => {
         </div>
         <form className="advisor-profile-update-form-container" onSubmit={handleSubmit}>
           <h1 className='advisor-profile-update-form-tittle'>Update Your Profile</h1>
-          <input
-            type="text"
-            name="fullName"
-            value={profileData.fullName}
-            onChange={handleInputChange}
-            placeholder="Full Name"
-            required
-          />
-
-          <input
-            type="text"
-            name="displayName"
-            value={profileData.displayName}
-            onChange={handleInputChange}
-            placeholder="Display Name"
-            required
-          />
-
-          <textarea
-            type="text"
-            name="qualifications"
-            value={profileData.qualifications}
-            onChange={handleInputChange}
-            placeholder="Professional Qualifications"
-          />
-
-          <textarea
-            type="text"
-            name="certifications"
-            value={profileData.certifications}
-            onChange={handleInputChange}
-            placeholder="Certifications and other qualifications"
-          />
-
-          <textarea 
-            className='advisor-profile-update-description'
-            name="description"
-            value={profileData.description}
-            onChange={handleInputChange}
-            placeholder="Short Bio or Description"
-            required
-          />
-
-          <input
-            type="text"
-            name="address"
-            value={profileData.address}
-            onChange={handleInputChange}
-            placeholder="Address"
-          />
-
-          <div className='advisor-profile-update-perminutesrate'>
+          <div className='advisor-profile-update-firstinput-div'>
             <input
-              type="number"
-              name="amount"
-              value={profileData.perMinuteRate.amount}
-              onChange={handleRateChange}
-              placeholder="Rate per Minute"
-              step="1"
-              min="1"
-              required
-            />
-            <span>1 min/USD</span>
-            <select
-              name="currency"
-              value={profileData.perMinuteRate.currency}
-              onChange={handleRateChange}
-            >
-              <option value="USD">USD</option>
-            </select>
-          </div>
-
-          <label htmlFor=""> 
-            <h4>Add your Profile Photo</h4>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoChange}
-              aria-labelledby="firstname"
-            />
-          </label> 
-
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={profileData.phoneNumber}
-            onChange={handleInputChange}
-            placeholder="Phone Number"
-            required
-          />
-
-          <h4>Add your Registered email address</h4>
-
-          <input
-            type="email"
-            name="email"
-            value={profileData.email}
-            onChange={handleInputChange}
-            placeholder="Email"
-            required
-          />
-          
-          <label htmlFor="timeZone">Select Time Zone</label>
-          <TimezoneSelect
-            value={selectedTimezone}
-            onChange={setSelectedTimezone}
-          />
-
-          <div className='available-days'>
-            <label>Available Days</label>
-            {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-              <div key={day}>
-                <input
-                  type="checkbox"
-                  name="availableDays"
-                  value={day}
-                  onChange={handleInputChange}
-                />
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <div>
-            <h4>Add your Available Hours</h4>
-            <input
-              type="time"
-              name="availableHoursstart"
-              value={profileData.availableHoursstart}
+              className='advisor-updateform-input1'
+              type="text"
+              name="fullName"
+              value={profileData.fullName}
               onChange={handleInputChange}
-              placeholder="Available Hours Start"
+              placeholder="Full Name"
               required
             />
-            <h6>to</h6> 
+
             <input
-              type="time"
-              name="availableHoursend"
-              value={profileData.availableHoursend}
+              className='advisor-updateform-input1'
+              type="text"
+              name="displayName"
+              value={profileData.displayName}
               onChange={handleInputChange}
-              placeholder="Available Hours End"
+              placeholder="Display Name"
               required
             />
-          </div>
 
-          <input
-            type="text"
-            name="languages"
-            value={profileData.languages}
-            onChange={handleInputChange}
-            placeholder="Languages"
-            required
-          />
+            <h4>Add Your Registered Email Address</h4>
 
-          <h3>Social Links</h3>
-          <input
-            type="text"
-            name="socialLinks.facebook"
-            value={profileData.socialLinks.facebook}
-            onChange={handleInputChange}
-            placeholder="Facebook URL"
-          />
-          <input
-            type="text"
-            name="socialLinks.linkedin"
-            value={profileData.socialLinks.linkedin}
-            onChange={handleInputChange}
-            placeholder="LinkedIn URL"
-          />
-          <input
-            type="text"
-            name="socialLinks.twitter"
-            value={profileData.socialLinks.twitter}
-            onChange={handleInputChange}
-            placeholder="Twitter URL"
-          />
+            <input
+              className='advisor-updateform-input1'
+              type="email"
+              name="email"
+              value={profileData.email}
+              onChange={handleInputChange}
+              placeholder="Email"
+              required
+            />
 
-          <button  className='profileUpdatebutton' type="submit">Update Profile</button>
+            <input
+              className='advisor-updateform-input1'
+              type="tel"
+              name="phoneNumber"
+              value={profileData.phoneNumber}
+              onChange={handleInputChange}
+              placeholder="Phone Number"
+              required
+            />
+
+            <input
+              className='advisor-updateform-input1'
+              type="text"
+              name="address"
+              value={profileData.address}
+              onChange={handleInputChange}
+              placeholder="Address"
+            />
+
+            <textarea
+              className='advisor-updateform-textarea'
+              type="text"
+              name="qualifications"
+              value={profileData.qualifications}
+              onChange={handleInputChange}
+              placeholder="Professional Qualifications"
+            />
+
+            <textarea
+              className='advisor-updateform-textarea'
+              type="text"
+              name="certifications"
+              value={profileData.certifications}
+              onChange={handleInputChange}
+              placeholder="Certifications and other qualifications"
+            />
+
+            <textarea 
+              className='advisor-updateform-textarea'
+              name="description"
+              value={profileData.description}
+              onChange={handleInputChange}
+              placeholder="Short Bio or Description"
+              required
+            />
+
+            <input
+              className='advisor-updateform-input1'
+              type="text"
+              name="languages"
+              value={profileData.languages}
+              onChange={handleInputChange}
+              placeholder="Languages"
+              required
+            />
+
+            <h4>1 min/USD</h4>
+            <div>
+              <input
+                className='advisor-updateform-ratefor-amount'
+                type="number"
+                name="amount"
+                value={profileData.perMinuteRate.amount}
+                onChange={handleRateChange}
+                placeholder="Rate per Minute"
+                step="1"
+                min="1"
+                required
+              />
+              <select
+                className='advisor-updateform-currency'
+                name="currency"
+                value={profileData.perMinuteRate.currency}
+                onChange={handleRateChange}
+              >
+                <option value="USD">USD</option>
+              </select>
+            </div>
+
+            <label htmlFor=""> 
+              <h4 style={{marginTop:"60px"}}>Add your Profile Photo</h4>
+              <input
+                className='advisor-updateform-uploadpic'
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoChange}
+                aria-labelledby="firstname"
+              />
+            </label> 
+
+            
+            <label htmlFor="timeZone" style={{marginTop:"40px"}}><h4>Select Time Zone</h4></label>
+            <TimezoneSelect
+              className='advisor-updateform-timezone'
+              value={selectedTimezone}
+              onChange={setSelectedTimezone}
+            />
+
+            <div className='advisor-available-days'>
+              <h4 >Available Days</h4>
+              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
+                <div className='advisor-available-days-item' key={day}>
+                  <input
+                    className='advisor-updateform-days'
+                    type="checkbox"
+                    name="availableDays"
+                    value={day}
+                    onChange={handleInputChange}
+                  />
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <h4 style={{marginTop:'60px'}}>Add your Available Hours</h4>
+
+            <div className='advisor-updateform-hours'>
+              <input
+                className='advisor-updateform-hours-start'
+                type="time"
+                name="availableHoursstart"
+                value={profileData.availableHoursstart}
+                onChange={handleInputChange}
+                placeholder="Available Hours Start"
+                required
+              />
+              <h6>to</h6> 
+              <input
+                className='advisor-updateform-hours-end'
+                type="time"
+                name="availableHoursend"
+                value={profileData.availableHoursend}
+                onChange={handleInputChange}
+                placeholder="Available Hours End"
+                required
+              />
+            </div>
+
+            <h4>Social Links</h4>
+            <input
+              className='advisor-updateform-input1'
+              type="text"
+              name="socialLinks.facebook"
+              value={profileData.socialLinks.facebook}
+              onChange={handleInputChange}
+              placeholder="Facebook URL"
+            />
+            <input
+              className='advisor-updateform-input1'
+              type="text"
+              name="socialLinks.linkedin"
+              value={profileData.socialLinks.linkedin}
+              onChange={handleInputChange}
+              placeholder="LinkedIn URL"
+            />
+            <input
+              className='advisor-updateform-input1'
+              type="text"
+              name="socialLinks.twitter"
+              value={profileData.socialLinks.twitter}
+              onChange={handleInputChange}
+              placeholder="Twitter URL"
+            />
+
+            <button  className='Advisor-profileUpdatebutton' type="submit">Update Profile</button>
+          </div> 
         </form>
         <div className='advisor-profile-update-advantagesasAdvisor'>
           <h2 className='advisor-profile-update-advantagesasAdvisor-tittle'>What advantages you get by becomming an advisor on spiritual insights</h2>
