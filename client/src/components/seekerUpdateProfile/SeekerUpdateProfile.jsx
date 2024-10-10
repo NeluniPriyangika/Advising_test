@@ -40,11 +40,13 @@ const SeekerReviewsContainer = (props) => (
 const SeekerUpdateProfile = () => {
 
   const seekerReviews = [
-    {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Clark Kent',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/200'},
-    {id: 2, homeRating:<ReadOnlyRating/>, title: 'Michel Jackson',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Bruce Wayne',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/201/200'},
-    {id: 3, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Peter Parker',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/201'},
-    {id: 3, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, personalDes:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", content: 'Peter Parker',timeText:'5 minutes for  $1', imgUrl: 'https://unsplash.it/200/201'},
-  ]
+    {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/200'},
+    {id: 2, homeRating:<ReadOnlyRating/>, title: 'Michel Jackson',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/201/200'},
+    {id: 3, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/201'},
+    {id: 4, homeRating:<ReadOnlyRating/>, title: 'Leo Doe',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/199'},
+    {id: 5, homeRating:<ReadOnlyRating/>, title: 'Jony Dep',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/198'},
+    {id: 6, homeRating:<ReadOnlyRating/>, title: 'Karoline Jude',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/200'},
+    {id: 7, homeRating:<ReadOnlyRating/>, title: 'charle Jhosep',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/201'},  ]
 
   const [profileData, setProfileData] = useState({
     fullName: '',
@@ -159,6 +161,7 @@ const SeekerUpdateProfile = () => {
           <form className='seeker-updateprofile-form' onSubmit={handleSubmit}>
             
             <input
+              className='seeker-updateprofile-form-input'
               type="text"
               name="fullName"
               value={profileData.fullName}
@@ -168,6 +171,7 @@ const SeekerUpdateProfile = () => {
             />
 
             <input
+              className='seeker-updateprofile-form-input'
               type="text"
               name="address"
               value={profileData.address}
@@ -177,6 +181,7 @@ const SeekerUpdateProfile = () => {
             />
     
             <input
+                className='seeker-updateprofile-form-input'
                 type="tel"
                 name="phoneNumber"
                 value={profileData.phoneNumber}
@@ -188,6 +193,7 @@ const SeekerUpdateProfile = () => {
             <h4>Add Your Registerd Email</h4>
 
             <input
+              className='seeker-updateprofile-form-input'
               type="email"
               name="email"
               value={profileData.email}
@@ -218,6 +224,7 @@ const SeekerUpdateProfile = () => {
             />
 
             <input
+                className='seeker-updateprofile-form-input'
                 type="text"
                 name="language"
                 value={profileData.language}
@@ -228,14 +235,15 @@ const SeekerUpdateProfile = () => {
 
             <h4>Add your Profile Picture</h4>
 
-           
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoChange}
-                required
-            />
-
+            <label>
+              <input
+                  className='seeker-profilepic-upload' 
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoChange}
+                  required
+              />
+            </label>
 
             <button className='seeker-profile-update-button' type="submit">Update Profile</button>
           </form>
