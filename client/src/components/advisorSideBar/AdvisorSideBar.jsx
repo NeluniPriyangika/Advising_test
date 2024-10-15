@@ -11,46 +11,54 @@ function AdvisorSideBar() {
   const [expanded, setExpanded] = React.useState(true);
   const [activeKey, setActiveKey] = React.useState('1');
   return (
-    <div style={{ width: 240 }}>
-      <Toggle
-        onChange={setExpanded}
-        checked={expanded}
-        checkedChildren="Expand"
-        unCheckedChildren="Collapse"
-      />
-      <hr />
-      <Sidenav expanded={expanded} defaultOpenKeys={['3', '4']}>
-        <Sidenav.Body>
+    <div className='sidebar-main' style={{ width: 240 }}>
+      
+      <Sidenav className='sidebar-conatiner' expanded={expanded} defaultOpenKeys={['3', '4']}>
+        <Sidenav.Body className='sidebar-body'>
           <Nav activeKey={activeKey} onSelect={setActiveKey}>
             <Nav.Item eventKey="1" icon={<DashboardIcon />}>
-              Dashboard
+              My Profile
             </Nav.Item>
             <Nav.Item eventKey="2" icon={<GroupIcon />}>
-              User Group
+              Home
             </Nav.Item>
-            <Nav.Menu placement="rightStart" eventKey="3" title="Advanced" icon={<MagicIcon />}>
-              <Nav.Item eventKey="3-1">Geo</Nav.Item>
-              <Nav.Item eventKey="3-2">Devices</Nav.Item>
-              <Nav.Item eventKey="3-3">Loyalty</Nav.Item>
-              <Nav.Item eventKey="3-4">Visit Depth</Nav.Item>
+            <Nav.Item eventKey="3" icon={<GroupIcon />}>
+              Message
+            </Nav.Item>
+            <Nav.Item eventKey="4" icon={<GroupIcon />}>
+              Public Chat
+            </Nav.Item>
+            <hr />
+            <Nav.Item eventKey="5" icon={<GroupIcon />}>
+              Find Seekers
+            </Nav.Item>
+            <Nav.Item eventKey="6" icon={<GroupIcon />}>
+              My Seekers
+            </Nav.Item>
+            <Nav.Item eventKey="7" icon={<GroupIcon />}>
+              My Earnings
+            </Nav.Item>
+            <Nav.Item eventKey="8" icon={<GroupIcon />}>
+              Get Paid
+            </Nav.Item>
+            <hr />
+            <Nav.Menu placement="rightStart" eventKey="9" title="Help" icon={<MagicIcon />}>
+              <Nav.Item eventKey="9-1">Find Seekers</Nav.Item>
+              <Nav.Item eventKey="9-2">How to start Chat</Nav.Item>
+              <Nav.Item eventKey="9-3">Payment Method</Nav.Item>
+              <Nav.Item eventKey="9-4">How to Register</Nav.Item>
             </Nav.Menu>
             <Nav.Menu
               placement="rightStart"
-              eventKey="4"
+              eventKey="10"
               title="Settings"
               icon={<GearCircleIcon />}
             >
-              <Nav.Item eventKey="4-1">Applications</Nav.Item>
-              <Nav.Item eventKey="4-2">Channels</Nav.Item>
-              <Nav.Item eventKey="4-3">Versions</Nav.Item>
-              <Nav.Menu eventKey="4-5" title="Custom Action">
-                <Nav.Item eventKey="4-5-1">Action Name</Nav.Item>
-                <Nav.Item eventKey="4-5-2">Action Params</Nav.Item>
-              </Nav.Menu>
+              <Nav.Item eventKey="10-1">Applications</Nav.Item>
+              <Nav.Item eventKey="10-2">Payments</Nav.Item>
             </Nav.Menu>
           </Nav>
         </Sidenav.Body>
-        <Sidenav.Toggle onToggle={expanded => setExpanded(expanded)} />
       </Sidenav>
     </div>
   );
