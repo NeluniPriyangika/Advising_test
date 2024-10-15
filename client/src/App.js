@@ -7,6 +7,7 @@ import AdvisorHomePage from './pages/advisorHomePage/AdvisorHomePage';
 import SeekerHomePage from './pages/seekerHomePage/SeekerHomePage';
 import AdvisorUpdateProfilePage from './pages/advisorUpdateProfilePage/AdvisorUpdateProfilePage';
 import SeekerUpdateProfilePage from './pages/seekerUpdateProfilePage/SeekerUpdateProfilePage';
+import AdvisorProfilePage from './pages/advisorProfilePage/AdvisorProfilePage';
 
 const PrivateRoute = ({ children }) => {
   const user = localStorage.getItem('user');
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/seeker-update-profile" element={<PrivateRoute><SeekerUpdateProfilePage /></PrivateRoute>} />
           <Route path="/advisor-home" element={<PrivateRoute><AdvisorHomePage /></PrivateRoute>} />
           <Route path="/seeker-home" element={<PrivateRoute><SeekerHomePage /></PrivateRoute> } />
+          <Route path="/advisor-profile" element={<PrivateRoute><AdvisorProfilePage /></PrivateRoute> } />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
