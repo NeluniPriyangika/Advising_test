@@ -1,5 +1,5 @@
 import React from 'react'
-import './advisorSideBar.css'
+import './seekerSideBar.css'
 import { Sidenav, Nav, Toggle } from 'rsuite';
 import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
 import GroupIcon from '@rsuite/icons/legacy/Group';
@@ -7,14 +7,14 @@ import MagicIcon from '@rsuite/icons/legacy/Magic';
 import GearCircleIcon from '@rsuite/icons/legacy/GearCircle';
 import 'rsuite/dist/rsuite-no-reset.min.css';
 
-function AdvisorSideBar() {
+function SeekerSideBar() {
   const [expanded, setExpanded] = React.useState(true);
   const [activeKey, setActiveKey] = React.useState('1');
   return (
-    <div className='advisor-sidebar-main' style={{ width: 240 }}>
+    <div className='seeker-sidebar-main' style={{ width: 240 }}>
       
-      <Sidenav className='advisor-sidebar-conatiner' expanded={expanded} defaultOpenKeys={['3', '4']}>
-        <Sidenav.Body className='advisor-sidebar-body'>
+      <Sidenav className='seeker-sidebar-conatiner' expanded={expanded} defaultOpenKeys={['3', '4']}>
+        <Sidenav.Body className='seeker-sidebar-body'>
           <Nav activeKey={activeKey} onSelect={setActiveKey}>
             <Nav.Item eventKey="1" icon={<DashboardIcon />}>
               My Profile
@@ -30,20 +30,20 @@ function AdvisorSideBar() {
             </Nav.Item>
             <hr />
             <Nav.Item eventKey="5" icon={<GroupIcon />}>
-              Find Seekers
+              Find Advisors
             </Nav.Item>
             <Nav.Item eventKey="6" icon={<GroupIcon />}>
-              My Seekers
+              My Advisors
             </Nav.Item>
             <Nav.Item eventKey="7" icon={<GroupIcon />}>
-              My Earnings
+              My Expences
             </Nav.Item>
             <Nav.Item eventKey="8" icon={<GroupIcon />}>
-              Get Paid
+              Notes
             </Nav.Item>
             <hr />
             <Nav.Menu placement="rightStart" eventKey="9" title="Help" icon={<MagicIcon />}>
-              <Nav.Item eventKey="9-1">Find Seekers</Nav.Item>
+              <Nav.Item eventKey="9-1">How to Find Advisors</Nav.Item>
               <Nav.Item eventKey="9-2">How to start Chat</Nav.Item>
               <Nav.Item eventKey="9-3">Payment Method</Nav.Item>
               <Nav.Item eventKey="9-4">How to Register</Nav.Item>
@@ -65,4 +65,4 @@ function AdvisorSideBar() {
 };
 
 
-export default AdvisorSideBar;
+export default SeekerSideBar;
