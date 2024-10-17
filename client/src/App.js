@@ -9,6 +9,7 @@ import AdvisorUpdateProfilePage from './pages/advisorUpdateProfilePage/AdvisorUp
 import SeekerUpdateProfilePage from './pages/seekerUpdateProfilePage/SeekerUpdateProfilePage';
 import AdvisorProfilePage from './pages/advisorProfilePage/AdvisorProfilePage';
 import SeekerProfilePage from './pages/seekerProfilePage/SeekerProfilePage';
+import SeekerMiddleChatPage from './pages/seekerMiddleChatPage/SeekerMiddleChatPage';
 
 
 const PrivateRoute = ({ children }) => {
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/seeker-home" element={<PrivateRoute><SeekerHomePage /></PrivateRoute> } />
           <Route path="/advisor-profile" element={<PrivateRoute><AdvisorProfilePage /></PrivateRoute> } />
           <Route path="/seeker-profile" element={<PrivateRoute><SeekerProfilePage /></PrivateRoute> } />
+          <Route path="/seeker-middle-chat" element={<PrivateRoute><SeekerMiddleChatPage /></PrivateRoute> } />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

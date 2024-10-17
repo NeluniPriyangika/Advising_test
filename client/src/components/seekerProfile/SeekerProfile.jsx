@@ -62,6 +62,7 @@ function SeekerProfile() {
                     <h1>Nisal Prabhashwara</h1>
                     <div className='seekerprofile-onlinestatus'></div>
                   </div>
+                  <hr />
                   <div className='seekerprofile-rating'>
                     <h4>Rating</h4>
                     <ReadOnlyRating/>

@@ -11,6 +11,10 @@
  
 }
 
+.advisorprofile-sidebar{
+    background-color: #f7f7fa;
+}
+
 .advisorprofile-rightcontainer{
     display: flex;
     flex-direction: column;

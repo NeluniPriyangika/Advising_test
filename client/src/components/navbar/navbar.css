@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     padding: 10px 0px;
-    background: rgb(255, 0, 0);
+    background: #232323;
     transition: background-color 0.1s ease;
     display: flex;
     justify-content: space-between;

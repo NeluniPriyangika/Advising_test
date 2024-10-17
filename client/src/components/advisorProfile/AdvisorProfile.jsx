@@ -62,6 +62,7 @@ function AdvisorProfile() {
                     <h1>Kasun Gayantha</h1>
                     <div className='advisorprofile-onlinestatus'></div>
                   </div>
+                  <hr />
                   <div className='advisorprofile-rating'>
                     <h4>Rating</h4>
                     <ReadOnlyRating/>

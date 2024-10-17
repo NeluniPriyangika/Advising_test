@@ -1,8 +1,9 @@
 .advisor-sidebar-main{
-    min-height: 130vh;
+    min-height: 80vh;
     background-color: #f7f7fa;
 }
 
 .advisor-sidebar-body{
-    min-height: 110vh;
+    min-height: 80vh;
+    
 }
