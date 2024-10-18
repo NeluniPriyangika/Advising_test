@@ -36,6 +36,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use('/api/auth',cors(corsOptions), require('./routes/auth'));
 app.use('/api', require('./routes/profileupdate'));
 app.use('/api', require('./routes/seekerprofileupdate'));
+app.use('/chat', require('./routes/chatRoutes'));
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
