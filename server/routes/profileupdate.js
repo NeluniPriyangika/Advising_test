@@ -22,7 +22,7 @@ router.post('/update-advisor-profile', upload.single('profilePhoto'), async (req
 
     const { fullName, displayName, qualifications, certifications, description, 
       perMinuteRate, timeZone, availableDays, availableHoursstart,availableHoursend, languages, 
-      phoneNumber, socialLinks , address, email } = req.body;
+      phoneNumber,paypalpaymentlink, socialLinks , address, email } = req.body;
 
     //const profilePhoto = req.file ? req.file.path : undefined;
 
@@ -49,6 +49,7 @@ router.post('/update-advisor-profile', upload.single('profilePhoto'), async (req
       user.availableHoursend = availableHoursend;
       user.languages = languages;
       user.phoneNumber = phoneNumber;
+      user.paypalpaymentlink = paypalpaymentlink;
       user.socialLinks = JSON.parse(socialLinks);
       user.profileCompleted = true;
     

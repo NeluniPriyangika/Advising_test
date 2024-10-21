@@ -1,0 +1,29 @@
+.advisorPending-container{
+    display: flex;
+    flex-direction: column;
+    background:  linear-gradient(
+        rgba(255, 217, 0, 0),
+        rgba(255, 217, 0, 0)
+        ),  url("../../assets/bg3.jpg") no-repeat;
+    min-height: 110vh;
+    background-size: cover;
+    background-position:top;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.advisorPending-container-header{
+    min-height: 200px;
+    background-color: rgb(95, 95, 95, 0.5);
+    width: 1000px;
+    border-radius: 40px;
+}
+
+.advisorPending-container-header h1{
+    font-size: 50px;
+    color: white;
+
+}
+

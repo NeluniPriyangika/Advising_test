@@ -24,6 +24,7 @@ const AdvisorUpdateProfile = () => {
     languages: '',
     phoneNumber: '',
     email: '',
+    paypalpaymentlink: '',
     socialLinks: {
       facebook: '',
       linkedin: '',
@@ -324,6 +325,18 @@ const AdvisorUpdateProfile = () => {
                 required
               />
             </div>
+
+            <h4>Add your PayPal payment link</h4>
+
+            <input
+                className='advisor-updateform-input1'
+                type="url"
+                name="availableHoursend"
+                value={profileData.paypalpaymentlink}
+                onChange={handleInputChange}
+                placeholder="Payment Link"
+                required
+              />
 
             <h4>Social Links</h4>
             <input
