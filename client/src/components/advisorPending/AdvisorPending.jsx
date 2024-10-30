@@ -1,6 +1,7 @@
 import React from 'react'
 import './advisorPending.css'
 import Navbar from '../navbar/Navbar'
+import Footer from '../footer/Footer'
 
 function AdvisorPending() {
   return (
@@ -11,6 +12,7 @@ function AdvisorPending() {
             <h1>Your Account will be approved by the admin...</h1>
           </div>
         </div>
+        <Footer />
 
     </div>
   )

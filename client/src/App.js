@@ -12,6 +12,7 @@ import SeekerProfilePage from './pages/seekerProfilePage/SeekerProfilePage';
 import SeekerMiddleChatPage from './pages/seekerMiddleChatPage/SeekerMiddleChatPage';
 import SeekerChatPage from './pages/SeekerChatPage/SeekerChatPage';
 import AdvisorPendingPage from './pages/advisorPendingPage/AdvisorPendingPage';
+import AdvisorChatPage from './pages/advisorChatPage/AdvisorChatPage';
 
 
 const PrivateRoute = ({ children }) => {
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/seeker-middle-chat" element={<PrivateRoute><SeekerMiddleChatPage /></PrivateRoute> } />
           <Route path="/seeker-chat" element={<PrivateRoute><SeekerChatPage /></PrivateRoute> } />
           <Route path="/advisor-pending" element={<PrivateRoute>< AdvisorPendingPage/></PrivateRoute> } />
+          <Route path="/advisor-chat" element={<PrivateRoute>< AdvisorChatPage/></PrivateRoute> } />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

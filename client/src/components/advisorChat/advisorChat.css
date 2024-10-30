@@ -1,22 +1,22 @@
-.SeekerChat-container {
+.AdvisorChat-container {
     display: flex;
     flex-direction: row;
     margin-top: 70px;
     min-height: 80vh;
 }
 
-.SeekerChat--sidebar {
+.AdvisorChat--sidebar {
     background-color: #f7f7fa;
 }
 
-.SeekerChat-Middlecontainer {
+.AdvisorChat-Middlecontainer {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     padding: 30px 0px 30px 30px;
 }
 
-.SeekerChat-Middlecontainer-top {
+.AdvisorChat-Middlecontainer-top {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -25,17 +25,20 @@
     margin: 0px 30px 0px 0px;
 }
 
-.SeekerChat-Middlecontainer-top1{
+.AdvisorChat-Middlecontainer-top1{
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-.SeekerChat-Middlecontainer-top2{
-
+.AdvisorChat-Middlecontainer-top2{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
-.Seeker-timer{
+/* Timer Countdown Text */
+.Advisor-timer {
     font-size: 24px;
     font-weight: bold;
     color: #333;
@@ -49,7 +52,33 @@
     width: 200px;
 }
 
-.SeekerChat-Middlecontainer-proPick {
+/* Start/End Timer Button */
+.Advisor-timer-controller {
+    background-color: #4caf50;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.Advisor-timer-controller:hover {
+    background-color: #45a049;
+}
+
+.Advisor-timer-controller.stop {
+    background-color: #e53935; /* Red for the end timer button */
+}
+
+.Advisor-timer-controller.stop:hover {
+    background-color: #d32f2f;
+}
+
+
+.AdvisorChat-Middlecontainer-proPick {
     width: 100px;
     height: 100px;
     border-radius: 50%;
@@ -57,7 +86,7 @@
     margin-right: 20px;
 }
 
-.SeekerChat-Status {
+.AdvisorChat-Status {
     background-color: green;
     width: 20px;
     height: 20px;
@@ -65,21 +94,21 @@
     margin-left: 20px;
 }
 
-/*.SeekerChat-Middlecontainer-bottom {
+/*.AdvisorChat-Middlecontainer-bottom {
     background-color: blanchedalmond;
     flex-grow: 1;
     padding: 15px;
     overflow-y: auto;
 }*/
 
-.SeekerChat-Middlecontainer-bottom {
+.AdvisorChat-Middlecontainer-bottom {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.SeekerChat-chatwindow {
+.AdvisorChat-chatwindow {
     flex-grow: 1;
     overflow-y: scroll;
     padding: 10px;
@@ -119,18 +148,18 @@
     background-color: #45a049;
 }
 
-.SeekerChat-RightContainer {
+.AdvisorChat-RightContainer {
     width: 240px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.SeekerChat-RightContainer h3{
+.AdvisorChat-RightContainer h3{
     text-decoration: underline;
 }
 
-.SeekerChat-chat-history-container{
+.AdvisorChat-chat-history-container{
     display: flex;
     height: 600px;
     width: 230px;
@@ -149,7 +178,7 @@
       }
   }
   
-  .SeekerChat-chat-history{
+  .AdvisorChat-chat-history{
     display: flex;
     flex: 1 0 100px;
     flex-direction: row;
@@ -177,11 +206,11 @@
     }
   }
   
-  .SeekerChat-chat-history-content2{
+  .AdvisorChat-chat-history-content2{
     width: 150px;
   }
   
-  .SeekerChat-chat-history-desc{
+  .AdvisorChat-chat-history-desc{
     font-size: 12px;
     overflow: hidden;
     display: -webkit-box;
@@ -193,7 +222,7 @@
     text-align: justify;
   }
   
-  .SeekerChat-chat-history-content2 h6{
+  .AdvisorChat-chat-history-content2 h6{
     font-size: 12px;
     padding-left: 5px;
     padding-right: 5px;
