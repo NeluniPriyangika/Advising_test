@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import HomePage from './pages/homePage/HomePage';
 import LoginPage from './pages/loginPage/LoginPage';
+import LoginPage1 from './pages/loginPage1/LoginPage1';
+import LoginFBPage from './pages/LoginFBPage/LoginFBPage';
 import AdvisorHomePage from './pages/advisorHomePage/AdvisorHomePage';
 import SeekerHomePage from './pages/seekerHomePage/SeekerHomePage';
 import AdvisorUpdateProfilePage from './pages/advisorUpdateProfilePage/AdvisorUpdateProfilePage';
@@ -27,7 +29,9 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage1 />} />
           <Route path="/login-page" element={<LoginPage />} />
+          <Route path="/login-FBpage" element={<LoginFBPage />} />
           <Route path="/advisor-update-profile" element={<PrivateRoute><AdvisorUpdateProfilePage /></PrivateRoute>} />
           <Route path="/seeker-update-profile" element={<PrivateRoute><SeekerUpdateProfilePage /></PrivateRoute>} />
           <Route path="/advisor-home" element={<PrivateRoute><AdvisorHomePage /></PrivateRoute>} />
