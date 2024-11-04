@@ -15,6 +15,7 @@ import SeekerMiddleChatPage from './pages/seekerMiddleChatPage/SeekerMiddleChatP
 import SeekerChatPage from './pages/SeekerChatPage/SeekerChatPage';
 import AdvisorPendingPage from './pages/advisorPendingPage/AdvisorPendingPage';
 import AdvisorChatPage from './pages/advisorChatPage/AdvisorChatPage';
+import AdvisorPublicChatPage from './pages/advisorPublicChatPage/AdvisorPublicChatPage';
 import PaymentPage from './pages/paymentPage/PaymentPage';
 
 
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/seeker-chat" element={<PrivateRoute><SeekerChatPage /></PrivateRoute> } />
           <Route path="/advisor-pending" element={<PrivateRoute>< AdvisorPendingPage/></PrivateRoute> } />
           <Route path="/advisor-chat" element={<PrivateRoute>< AdvisorChatPage/></PrivateRoute> } />
+          <Route path="/advisor-public-chat" element={<PrivateRoute>< AdvisorPublicChatPage/></PrivateRoute> } />
           <Route path="/payment" element={<PrivateRoute>< PaymentPage/></PrivateRoute> } />
         </Routes>
       </Router>
