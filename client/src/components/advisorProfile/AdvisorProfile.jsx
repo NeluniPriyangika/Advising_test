@@ -1,6 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './advisorPrifile.css';
-import Navbar from '../navbar/Navbar';
+import Navbar2 from '../navbar2/Navbar2';
 import Footer from '../footer/Footer';
 import AdvisorSideBar from '../advisorSideBar/AdvisorSideBar';
 import ReadOnlyRating from '../readOnlyRating/ReadOnlyRating';
@@ -38,6 +39,8 @@ const SeekerReviewsContainer = (props) => (
 
 function AdvisorProfile() {
 
+  const navigate = useNavigate ();
+
   const seekerReviews = [
     {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`“I’ve always struggled with budgeting, but the financial Advisor I connected with made everything so simple. I feel confident in managing my money now`, imgUrl: 'https://unsplash.it/200/200'},
     {id: 2, homeRating:<ReadOnlyRating/>, title: 'Michel Jackson',subtitle:`“I’ve always struggled with budgeting, but the financial Advisor I connected with made everything so simple. I feel confident in managing my money now`, imgUrl: 'https://unsplash.it/201/200'},
@@ -50,7 +53,7 @@ function AdvisorProfile() {
 
   return (
     <div className='advisorProfile-main'>
-      <Navbar />
+      <Navbar2 />
       <div className='advisorprofile-container'>
         <div className='advisorprofile-sidebar'>
           <AdvisorSideBar />
@@ -99,7 +102,7 @@ function AdvisorProfile() {
                 <div>
                     <img className='advisorprofile-image' src={Advisor1} alt="" />
                 </div>
-                <button className='advisorprofile-messagingbutton'>Start Messaging</button>
+                <button className='advisorprofile-messagingbutton' onClick={() => navigate('/seeker-middle-chat')} >Start Messaging</button>
                 <h2 className='advisorprofile-perminuterate'>2 USD / 1 min</h2>
                 <h2 className='advisorprofile-language'>Language : English</h2>
                 

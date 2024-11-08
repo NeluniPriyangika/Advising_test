@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'; 
 import { useTimer } from 'react-timer-hook'; 
 import './seekerChat.css';
-import Navbar from '../navbar/Navbar';
+import Navbar2 from '../navbar2/Navbar2';
 import SeekerSideBar from '../seekerSideBar/SeekerSideBar';
 import Footer from '../footer/Footer';
 import Advisor2 from '../../assets/Advisor2.jpg';
@@ -115,7 +115,7 @@ function SeekerChat() {
 
   return (
     <div className='SeekerChat-main'>
-      <Navbar />
+      <Navbar2 />
       <div className='SeekerChat-container'>
         <div className='SeekerChat--sidebar'>
           <SeekerSideBar />

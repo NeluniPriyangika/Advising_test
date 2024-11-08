@@ -1,6 +1,6 @@
 import React from 'react';
 import './seekerPrifile.css';
-import Navbar from '../navbar/Navbar';
+import Navbar2 from '../navbar2/Navbar2';
 import Footer from '../footer/Footer';
 import SeekerSideBar from '../seekerSideBar/SeekerSideBar';
 import ReadOnlyRating from '../readOnlyRating/ReadOnlyRating';
@@ -50,7 +50,7 @@ function SeekerProfile() {
 
   return (
     <div className='seekerProfile-main'>
-      <Navbar />
+      <Navbar2 />
       <div className='seekerprofile-container'>
         <div className='seekerprofile-sidebar'>
           <SeekerSideBar />

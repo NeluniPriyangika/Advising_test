@@ -3,7 +3,7 @@ import './seekerUpdateProfile.css';
 import { useNavigate } from 'react-router-dom';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
-import Navbar from '../navbar/Navbar';
+import Navbar2 from '../navbar2/Navbar2';
 import Footer from '../footer/Footer';
 import ReadOnlyRating from '../readOnlyRating/ReadOnlyRating';
 
@@ -144,7 +144,7 @@ const SeekerUpdateProfile = () => {
 
   return (
     <div className='seeker-updateprofile-main'>
-      <Navbar/>
+      <Navbar2 />
       <div className='seeker-updateprofile-container'>
         <div className='seeker-updateprofile-leftcontainer'>
 

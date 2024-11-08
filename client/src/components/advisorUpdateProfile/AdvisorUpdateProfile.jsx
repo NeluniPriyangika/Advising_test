@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import "./advisorUpdateProfile.css";
 import TimezoneSelect from 'react-timezone-select';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer'; 
+import Navbar2 from '../navbar2/Navbar2';
 
 const AdvisorUpdateProfile = () => {
   const [profileData, setProfileData] = useState({
@@ -136,7 +136,7 @@ const AdvisorUpdateProfile = () => {
 
   return (
     <div className='advisor-profile-update-main'>
-      <Navbar />
+      <Navbar2 />
       <div className='advisor-profile-update-container'>
         <div className='advisor-profile-update-tipstobuildprofile'>
           <h2 className='advisor-profile-update-tipstobuildprofile-tittle'>Tips to build a good profile</h2>
@@ -312,7 +312,7 @@ const AdvisorUpdateProfile = () => {
                 value={profileData.availableHoursstart}
                 onChange={handleInputChange}
                 placeholder="Available Hours Start"
-                required
+                
               />
               <h6>to</h6> 
               <input
@@ -322,7 +322,7 @@ const AdvisorUpdateProfile = () => {
                 value={profileData.availableHoursend}
                 onChange={handleInputChange}
                 placeholder="Available Hours End"
-                required
+              
               />
             </div>
 
@@ -335,7 +335,7 @@ const AdvisorUpdateProfile = () => {
                 value={profileData.paypalpaymentlink}
                 onChange={handleInputChange}
                 placeholder="Payment Link"
-                required
+                
               />
 
             <h4>Social Links</h4>

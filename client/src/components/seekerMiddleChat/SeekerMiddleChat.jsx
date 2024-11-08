@@ -1,15 +1,18 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import './seekerMiddleChat.css';
-import Navbar from '../navbar/Navbar';
+import Navbar2 from '../navbar2/Navbar2';
 import Footer from '../footer/Footer';
 import SeekerSideBar from '../seekerSideBar/SeekerSideBar';
 import Advisor1 from '../../assets/Advisor1.jpg';
 
 
 function SeekerMiddleChat() {
+  const navigate = useNavigate ();
+
   return (
     <div className='SeekerMCP-main'>
-      <Navbar />
+      <Navbar2 />
       <div className='SeekerMCP-container'>
         <div className='SeekerMCP--sidebar'>
             <SeekerSideBar />
@@ -19,7 +22,7 @@ function SeekerMiddleChat() {
           <div className='SeekerMCP-rightcontainer-content'>
             <div className='SeekerMCP-profile-image-div'>
               <img className='SeekerMCP-profile-image' src={Advisor1} alt="" />
-              <button  className='SeekerMCP-pay-sendMessage' type="submit">Pay and send message</button>
+              <button  className='SeekerMCP-pay-sendMessage' type="submit" onClick={()=>navigate("/payment")}>Pay and send message</button>
             </div>
             <div className='SeekerMCP-right-form'>
               <h3>2 USD / min</h3>

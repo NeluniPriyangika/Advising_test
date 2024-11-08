@@ -1,14 +1,18 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import './payment.css'
-import Navbar from '../navbar/Navbar';
+import Navbar2 from '../navbar2/Navbar2';
 import SeekerSideBar from '../seekerSideBar/SeekerSideBar';
 import Footer from '../footer/Footer'
 import Advisor2 from '../../assets/Advisor2.jpg'
 
 function Payment() {
+  const navigate = useNavigate ();
+
+
   return (
     <div className='payment-main'>
-      <Navbar />
+      <Navbar2 />
       <div className="pyment-container">
         <div className="pyment-container-right">
           <SeekerSideBar /> 
@@ -30,7 +34,7 @@ function Payment() {
                 </div>
                 
             </div>
-            <button className='paymet-sendmessage-button'>Send Message</button>
+            <button className='paymet-sendmessage-button' onClick={()=>navigate("/seeker-chat")}>Send Message</button>
         </div>
       </div>
       <Footer />
