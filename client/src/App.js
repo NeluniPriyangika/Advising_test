@@ -17,6 +17,7 @@ import AdvisorPendingPage from './pages/advisorPendingPage/AdvisorPendingPage';
 import AdvisorChatPage from './pages/advisorChatPage/AdvisorChatPage';
 import AdvisorPublicChatPage from './pages/advisorPublicChatPage/AdvisorPublicChatPage';
 import PaymentPage from './pages/paymentPage/PaymentPage';
+import PrivacyPolicyPage from './pages/privacyPolicyPage/PrivacyPolicyPage';
 
 
 const PrivateRoute = ({ children }) => {
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/advisor-chat" element={<PrivateRoute>< AdvisorChatPage/></PrivateRoute> } />
           <Route path="/advisor-public-chat" element={<PrivateRoute>< AdvisorPublicChatPage/></PrivateRoute> } />
           <Route path="/payment" element={<PrivateRoute>< PaymentPage/></PrivateRoute> } />
+          <Route path="/privacy-policy" element={<PrivateRoute>< PrivacyPolicyPage/></PrivateRoute> } />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
