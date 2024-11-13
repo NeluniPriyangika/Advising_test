@@ -26,7 +26,7 @@ function LoginFB() {
         },
         body: JSON.stringify({
           accessToken: response.accessToken,
-          userID: response.id, // Changed from response.userID to response.id
+          userID: response.id,
           email: response.email,
           name: response.name,
           userType: userType,
@@ -34,18 +34,14 @@ function LoginFB() {
         credentials: 'include'
       });
 
-      // Handle non-200 responses
+      // Parse the response
+      const data = await res.json();
+
+      // Check if there's an error
       if (!res.ok) {
-        const errorData = await res.text(); // Use text() instead of json() first
-        try {
-          const parsedError = JSON.parse(errorData);
-          throw new Error(parsedError.error || 'Authentication failed');
-        } catch (e) {
-          throw new Error(errorData || 'Authentication failed');
-        }
+        throw new Error(data.error || 'Authentication failed');
       }
 
-      const data = await res.json();
       if (data.user) {
         localStorage.setItem('user', JSON.stringify(data.user));
         navigate(data.redirectTo);
@@ -60,12 +56,24 @@ function LoginFB() {
 
   const handleUserTypeSelect = (type) => {
     setUserType(type);
+    setError(null); // Clear any previous errors when switching user type
   };
 
   return (
     <div className="login-container">
       <h2 className='signintitle'>Sign In</h2>
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="error-message" style={{ 
+          color: '#ff3333',
+          backgroundColor: '#ffebeb',
+          padding: '10px',
+          borderRadius: '4px',
+          marginBottom: '15px',
+          textAlign: 'center'
+        }}>
+          {error}
+        </div>
+      )}
       <div className="user-type-selection">
         <div className="user-type-buttons">
           <button

@@ -86,11 +86,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  facebookId: {
-    type: String,
-    sparse: true
-  }
-
   
 }, { timestamps: true });
 
