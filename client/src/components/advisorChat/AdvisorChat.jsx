@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useTimer } from 'react-timer-hook'; // Import the timer hook
+import { useTimer } from 'react-timer-hook';
 import './advisorChat.css';
 import Navbar2 from '../navbar2/Navbar2';
 import AdvisorSideBar from '../advisorSideBar/AdvisorSideBar';
@@ -8,64 +8,77 @@ import Seeker1 from '../../assets/seeker1.png';
 import io from 'socket.io-client';
 import { MessageBox } from 'react-chat-elements';
 import 'react-chat-elements/dist/main.css';
+import axios from 'axios';
 
-
-const AdvisorChatHistory = (props) => (
-    <div className="AdvisorChat-chat-history">
-      <div className='AdvisorChat-chat-history-content1'>
-        <img src={ props.imgUrl } 
-        alt={ props.alt || 'Image' } />
-      </div>
-      <div className="AdvisorChat-chat-history-content2">
-        <h6>{ props.title }</h6>
-        <p className='AdvisorChat-chat-history-desc'>"{props.message1}</p>
-        <p className='AdvisorChat-chat-history-desc'>"{props.message2}</p>
-      </div>  
-    </div>
-  );
-  
-  const AdvisorChatHistoryContainer = (props) => (
-    <div className="AdvisorChat-chat-history-container">
-      {
-        props.reviews.map((review) => (
-          <AdvisorChatHistory title={ review.title }
-            imgUrl={ review.imgUrl }
-            timeText = {review.timeText} 
-            message1 = {review.message1}
-            message2 = {review.message2}/>
-        ))
-      }
-    </div>
-  );
-
-const socket = io('http://localhost:5000');
+const SOCKET_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:5000/chat';
+const socket = io(SOCKET_URL);
 
 function AdvisorChat() {
-  const [messages, setMessages] = useState([
-    { position: 'left', type: 'text', text: 'Hi, Hello Kasuni.', date: new Date() },
-    { position: 'right', type: 'text', text: 'Hello! How can I help you today?', date: new Date() },
-    { position: 'left', type: 'text', text: 'I need some advice regarding my career.', date: new Date() },
-  ]);
-
+  const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [advisorSession, setAdvisorSession] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
 
-  // Set initial time to 0
+  // Timer setup
   const initialTime = new Date();
-  initialTime.setSeconds(initialTime.getSeconds()); // Start at 0
-
-  // Use the react-timer-hook
+  initialTime.setSeconds(initialTime.getSeconds());
+  
   const { seconds, minutes, hours, restart, pause } = useTimer({
     expiryTimestamp: initialTime,
     onExpire: () => console.warn("Timer expired"),
-    autoStart: false, // Start the timer manually
+    autoStart: false,
   });
 
-  const handleTimerToggle = () => {
+  // Initialize chat session
+  useEffect(() => {
+    const initializeSession = async () => {
+      try {
+        const response = await axios.post(`${API_URL}/advisor-session`, {
+          advisorId: 'YOUR_ADVISOR_ID',
+          seekerId: 'SEEKER_ID'
+        });
+        setAdvisorSession(response.data);
+        socket.emit('join', response.data._id);
+      } catch (error) {
+        console.error('Error creating chat session:', error);
+      }
+    };
+
+    initializeSession();
+    loadChatHistory();
+  }, []);
+
+  // Load chat history
+  const loadChatHistory = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/advisor-history/YOUR_ADVISOR_ID`);
+      setChatHistory(response.data);
+    } catch (error) {
+      console.error('Error loading chat history:', error);
+    }
+  };
+  // Socket message handling
+  useEffect(() => {
+    socket.on('message', (msg) => {
+      setMessages(prevMessages => [...prevMessages, msg]);
+    });
+
+    return () => socket.off('message');
+  }, []);
+
+  // Timer handling
+  const handleTimerToggle = async () => {
     if (isTimerActive) {
-      pause(); // Pause the timer
+      pause();
+      //end chat session
+      try {
+        await axios.put(`${API_URL}/advisor-session/${advisorSession._id}/end`);
+      } catch (error) {
+        console.error('Error ending chat session:', error);
+      }
     } else {
-      // Restart the timer from 1 hour
       const newTime = new Date();
       newTime.setSeconds(newTime.getSeconds() + 3600);
       restart(newTime);
@@ -73,33 +86,57 @@ function AdvisorChat() {
     setIsTimerActive(!isTimerActive);
   };
 
-  useEffect(() => {
-    socket.on('message', (msg) => setMessages((prevMessages) => [...prevMessages, msg]));
-    return () => socket.off('message');
-  }, []);
-
-  const sendMessage = () => {
-    if (messageInput.trim()) {
+  // Send message
+  const sendMessage = async () => {
+    if (messageInput.trim() && advisorSession) {
       const newMessage = {
-        position: 'right',
-        type: 'text',
-        text: messageInput,
-        date: new Date(),
+        advisorSessionId: advisorSession._id,
+        advisorText: messageInput,
+        advisorPosition: 'right',
+        type: 'text'
       };
-      socket.emit('message', newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setMessageInput(''); // Clear the input after sending
+
+      try {
+        await axios.post(`${API_URL}/advisor-message`, newMessage);
+        socket.emit('message', { 
+          advisorSessionId: advisorSession._id, 
+          advisorMessage: newMessage 
+        });
+        setMessageInput('');
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
     }
   };
 
-  const AdvisorChatsHis = [
-    {id: 1, title: 'Serenity Stone',message1:`Hello, I'm Shanaya`, message2:`How can i help you?`, imgUrl: 'https://unsplash.it/200/200'},
-    {id: 2, title: 'Michel Jackson',message1:`Hello, I'm Shanaya`, message2:`How can i help you?`, imgUrl: 'https://unsplash.it/201/200'},
-    {id: 3, title: 'Serenity Stone',message1:`Hello, I'm Shanaya`, message2:`How can i help you?`,  imgUrl: 'https://unsplash.it/200/201'},
-    {id: 4, title: 'Leo Doe',message1:`Hello, I'm Shanaya`, message2:`How can i help you?`,  imgUrl: 'https://unsplash.it/200/199'},
-    {id: 5, title: 'Jony Dep',message1:`Hello, I'm Shanaya`, message2:`How can i help you?`,  imgUrl: 'https://unsplash.it/200/198'},
-    {id: 6, title: 'Karoline Jude',message1:`Hello, I'm Shanaya`, message2:`How can i help you?`,  imgUrl: 'https://unsplash.it/200/200'},
-    {id: 7, title: 'charle Jhosep',message1:`Hello, I'm Shanaya`, message2:`How can i help you?`,  imgUrl: 'https://unsplash.it/200/201'},  ]
+  // Chat history component remains the same
+  const AdvisorChatHistory = (props) => (
+    <div className="AdvisorChat-chat-history">
+      <div className='AdvisorChat-chat-history-content1'>
+        <img src={props.imgUrl} alt={props.alt || 'Image'} />
+      </div>
+      <div className="AdvisorChat-chat-history-content2">
+        <h6>{props.title}</h6>
+        <p className='AdvisorChat-chat-history-desc'>"{props.message1}</p>
+        <p className='AdvisorChat-chat-history-desc'>"{props.message2}</p>
+      </div>
+    </div>
+  );
+
+  const AdvisorChatHistoryContainer = (props) => (
+    <div className="AdvisorChat-chat-history-container">
+      {props.reviews.map((review) => (
+        <AdvisorChatHistory
+          key={review.id}
+          title={review.title}
+          imgUrl={review.imgUrl}
+          timeText={review.timeText}
+          message1={review.message1}
+          message2={review.message2}
+        />
+      ))}
+    </div>
+  );
 
   return (
     <div className="AdvisorChat-main">
@@ -139,13 +176,13 @@ function AdvisorChat() {
               ))}
             </div>
             <div className="chat-input">
-                <input
-                    type="text"
-                    placeholder="Type a message..."
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)} // Update the input state
-                />
-                <button onClick={sendMessage}>Send</button>
+              <input
+                type="text"
+                placeholder="Type a message..."
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+              />
+              <button onClick={sendMessage}>Send</button>
             </div>
           </div>
         </div>
@@ -153,7 +190,7 @@ function AdvisorChat() {
         <div className="AdvisorChat-RightContainer">
           <h3>Chat History</h3>
           <div className="AdvisorChat-chat-history-content">
-            <AdvisorChatHistoryContainer reviews={ AdvisorChatsHis } />
+            <AdvisorChatHistoryContainer reviews={chatHistory} />
           </div>
         </div>
       </div>
