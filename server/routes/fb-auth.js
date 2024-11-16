@@ -104,7 +104,7 @@ router.post('/facebook-login', async (req, res) => {
     // Determine redirect path
     const redirectTo = isNewUser || !user.profileCompleted
       ? `/${userType}-update-profile`
-      : `/${userType}-home`;
+      : `/${userType}-profile`;
 
     // Send response
     return res.status(200).json({
