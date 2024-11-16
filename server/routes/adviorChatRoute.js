@@ -6,14 +6,18 @@ const advisorChatMiddleware = require('../middleware/advisorChatMiddleware');
 
 //Create new chat session
 router.post('/advisor-session', advisorAuthMiddleware, async (req, res) => {
+  console.log('Received session request:', req.body);
   try {
     const advisorSession = new AdvisorChatSession({
       advisor: req.body.advisorId,
       seeker: req.body.seekerId
     });
+    console.log('Created session:', advisorSession);
     await advisorSession.save();
+    console.log('Saved session');
     res.status(201).json(advisorSession);
   } catch (error) {
+    console.error('Session creation error:', error);
     res.status(500).json({ error: error.message });
   }
 });

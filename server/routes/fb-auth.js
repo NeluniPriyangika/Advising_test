@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const fetch = require('node-fetch');
-const FBUser = require('../models/FBuser');
+const User = require('../models/user');
 
 router.post('/facebook-login', async (req, res) => {
   console.log('Received Facebook login request:', req.body);
@@ -32,7 +32,7 @@ router.post('/facebook-login', async (req, res) => {
     const fbUserData = await fbUserResponse.json();
 
     // Check if user exists with this Facebook ID
-    let user = await FBUser.findOne({ facebookId: userID });
+    let user = await User.findOne({ userId: userID });
 
     // If user exists, check if they're trying to sign up with a different userType
     if (user && user.userType !== userType) {
@@ -43,7 +43,7 @@ router.post('/facebook-login', async (req, res) => {
 
     // If no user found with Facebook ID, check email
     if (!user) {
-      user = await FBUser.findOne({ email: email });
+      user = await User.findOne({ email: email });
       if (user) {
         return res.status(400).json({
           error: `This email is already registered as a ${user.userType}. Please use a different email address to register as a ${userType}.`
@@ -56,7 +56,7 @@ router.post('/facebook-login', async (req, res) => {
     if (!user) {
       // Create new user with Facebook data
       const userData = {
-        facebookId: userID,
+        userId: userID,
         email,
         name,
         userType,
@@ -68,7 +68,7 @@ router.post('/facebook-login', async (req, res) => {
       };
 
       try {
-        user = new FBUser(userData);
+        user = new User(userData);
         await user.save();
         console.log('New user created:', user);
         isNewUser = true;
@@ -81,8 +81,8 @@ router.post('/facebook-login', async (req, res) => {
     } else {
       // Update existing user's Facebook data if needed
 	  // Update existing user's Facebook data
-    if (!user.facebookId || !user.profilePhotoUrl) {
-      user.facebookId = userID;
+    if (!user.userId || !user.profilePhotoUrl) {
+      user.userId = userID;
       user.profilePhotoUrl = fbUserData.picture?.data?.url;
       user.socialLinks = {
         ...user.socialLinks,
@@ -130,6 +130,24 @@ router.post('/facebook-login', async (req, res) => {
     return res.status(500).json({
       error: error.message || 'Authentication failed'
     });
+  }
+});
+
+// Add this new route to your existing fb-auth.js
+router.get('/facebook-current-user', async (req, res) => {
+  try {
+    const { email, userId } = req.query;
+    
+    let user = await User.findOne(userId ? { userId } : { email });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    console.error('Error fetching Facebook user:', error);
+    res.status(500).json({ error: 'Failed to fetch user data' });
   }
 });
 

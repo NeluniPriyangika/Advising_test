@@ -16,13 +16,13 @@ router.post('/google-login', async (req, res) => {
 
     const { sub, email, name } = ticket.getPayload();
 
-    let user = await User.findOne({ googleId: sub });
+    let user = await User.findOne({ userId: sub });
     let isNewUser = false;
 
     if (!user) {
       // New user
       user = new User({
-        googleId: sub,
+        userId: sub,
         email,
         name,
         userType,
@@ -38,13 +38,31 @@ router.post('/google-login', async (req, res) => {
       redirectTo = userType === 'advisor' ? '/advisor-update-profile' : '/seeker-update-profile';
     } else {
       // Existing user with completed profile
-      redirectTo = user.userType === 'advisor' ? '/advisor-home' : '/seeker-home';
+      redirectTo = user.userType === 'advisor' ? '/advisor-chat' : '/seeker-chat';
     }
 
     res.json({ user, redirectTo, isNewUser });
   } catch (error) {
     console.error('Authentication error:', error);
     res.status(400).json({ error: 'Authentication failed' });
+  }
+});
+
+// Add this new route to your existing auth.js
+router.get('/google-current-user', async (req, res) => {
+  try {
+    const { email, userId } = req.query;
+    
+    let user = await User.findOne(userId ? { userId } : { email });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    console.error('Error fetching Google user:', error);
+    res.status(500).json({ error: 'Failed to fetch user data' });
   }
 });
 

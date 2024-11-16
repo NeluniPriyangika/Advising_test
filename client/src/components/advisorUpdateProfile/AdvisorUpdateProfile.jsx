@@ -124,7 +124,7 @@ const AdvisorUpdateProfile = () => {
       });
       const data = await res.json();
       if (data.success) {
-        navigate('/advisor-home');
+        navigate('/advisor-chat');
       } else {
         // Handle error
         console.error('Profile update failed:', data.error);

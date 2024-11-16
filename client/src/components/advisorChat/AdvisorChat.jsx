@@ -11,15 +11,18 @@ import 'react-chat-elements/dist/main.css';
 import axios from 'axios';
 
 const SOCKET_URL = 'http://localhost:5000';
-const API_URL = 'http://localhost:5000/chat';
+const API_URL = 'http://localhost:5000/advisor-chat';
 const socket = io(SOCKET_URL);
 
 function AdvisorChat() {
+  // States
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [advisorSession, setAdvisorSession] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // Timer setup
   const initialTime = new Date();
@@ -31,35 +34,82 @@ function AdvisorChat() {
     autoStart: false,
   });
 
-  // Initialize chat session
+  // Load chat history function
+  const loadChatHistory = async () => {
+    if (!currentUser) return;
+
+    try {
+      const response = await axios.get(`${API_URL}/advisor-history`, {
+        params: { userId: currentUser._id }
+      });
+      setChatHistory(response.data);
+    } catch (error) {
+      console.error('Error loading chat history:', error.response?.data || error.message);
+    }
+  };
+
+  // Fetch current user effect
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        // First try Google
+        const googleResponse = await axios.get('/api/auth/google-current-user', {
+          params: {
+            email: sessionStorage.getItem('userEmail') // Get email from session storage
+          }
+        });
+        
+        if (googleResponse.data.user) {
+          setCurrentUser(googleResponse.data.user);
+          setLoading(false);
+          return;
+        }
+      } catch (googleError) {
+        // If Google fails, try Facebook
+        try {
+          const fbResponse = await axios.get('/api/auth/facebook-current-user', {
+            params: {
+              email: sessionStorage.getItem('userEmail') // Get email from session storage
+            }
+          });
+          
+          if (fbResponse.data.user) {
+            setCurrentUser(fbResponse.data.user);
+          }
+        } catch (fbError) {
+          console.error('Error fetching user:', fbError);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  // Initialize chat session effect
   useEffect(() => {
     const initializeSession = async () => {
+      if (!currentUser || currentUser.userType !== 'advisor') return;
+
       try {
         const response = await axios.post(`${API_URL}/advisor-session`, {
-          advisorId: 'YOUR_ADVISOR_ID',
-          seekerId: 'SEEKER_ID'
+          email: currentUser.email,
+          userId: currentUser._id,
+          seekerId: 'SEEKER_ID' // Get this from route params
         });
+        
         setAdvisorSession(response.data);
         socket.emit('join', response.data._id);
+        await loadChatHistory();
       } catch (error) {
         console.error('Error creating chat session:', error);
       }
     };
 
     initializeSession();
-    loadChatHistory();
-  }, []);
+  }, [currentUser]);
 
-  // Load chat history
-  const loadChatHistory = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/advisor-history/YOUR_ADVISOR_ID`);
-      setChatHistory(response.data);
-    } catch (error) {
-      console.error('Error loading chat history:', error);
-    }
-  };
-  // Socket message handling
+  // Socket message handling effect
   useEffect(() => {
     socket.on('message', (msg) => {
       setMessages(prevMessages => [...prevMessages, msg]);
@@ -70,11 +120,15 @@ function AdvisorChat() {
 
   // Timer handling
   const handleTimerToggle = async () => {
+    if (!currentUser || !advisorSession) return;
+
     if (isTimerActive) {
       pause();
-      //end chat session
       try {
-        await axios.put(`${API_URL}/advisor-session/${advisorSession._id}/end`);
+        await axios.put(`${API_URL}/advisor-session/${advisorSession._id}/end`, {
+          userId: currentUser._id,
+          email: currentUser.email
+        });
       } catch (error) {
         console.error('Error ending chat session:', error);
       }
@@ -88,28 +142,40 @@ function AdvisorChat() {
 
   // Send message
   const sendMessage = async () => {
-    if (messageInput.trim() && advisorSession) {
-      const newMessage = {
-        advisorSessionId: advisorSession._id,
-        advisorText: messageInput,
-        advisorPosition: 'right',
-        type: 'text'
-      };
+    if (!messageInput.trim() || !advisorSession || !currentUser) return;
 
-      try {
-        await axios.post(`${API_URL}/advisor-message`, newMessage);
-        socket.emit('message', { 
-          advisorSessionId: advisorSession._id, 
-          advisorMessage: newMessage 
-        });
-        setMessageInput('');
-      } catch (error) {
-        console.error('Error sending message:', error);
-      }
+    const messageData = {
+      advisorSessionId: advisorSession._id,
+      advisorText: messageInput,
+      advisorPosition: 'right',
+      type: 'text',
+      userId: currentUser._id,
+      email: currentUser.email
+    };
+
+    try {
+      const response = await axios.post(`${API_URL}/advisor-message`, messageData);
+      socket.emit('message', { 
+        advisorSessionId: advisorSession._id, 
+        advisorMessage: response.data 
+      });
+      setMessageInput('');
+    } catch (error) {
+      console.error('Error sending message:', error);
     }
   };
 
-  // Chat history component remains the same
+  // Loading state
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Access check
+  if (!currentUser || currentUser.userType !== 'advisor') {
+    return <div>Access denied. Only advisors can access this page.</div>;
+  }
+
+  // Chat history components
   const AdvisorChatHistory = (props) => (
     <div className="AdvisorChat-chat-history">
       <div className='AdvisorChat-chat-history-content1'>
@@ -149,15 +215,23 @@ function AdvisorChat() {
         <div className="AdvisorChat-Middlecontainer">
           <div className="AdvisorChat-Middlecontainer-top">
             <div className="AdvisorChat-Middlecontainer-top1">
-              <img className="AdvisorChat-Middlecontainer-proPick" src={Seeker1} alt="Advisor" />
-              <h2>Chamika Perera</h2>
+              <img 
+                className="AdvisorChat-Middlecontainer-proPick" 
+                src={currentUser.profilePhotoUrl || Seeker1} 
+                alt="Advisor" 
+              />
+              <h2>{currentUser.name}</h2>
               <div className="AdvisorChat-Status"></div>
             </div>
             <div className="AdvisorChat-Middlecontainer-top2">
               <div className="Advisor-timer">
                 {`${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`}
               </div>
-              <button className="Advisor-timer-controller" onClick={handleTimerToggle}>
+              <button 
+                className="Advisor-timer-controller" 
+                onClick={handleTimerToggle}
+                disabled={!advisorSession}
+              >
                 {isTimerActive ? "End Timer" : "Start Timer"}
               </button>
             </div>
@@ -181,8 +255,14 @@ function AdvisorChat() {
                 placeholder="Type a message..."
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
+                disabled={!advisorSession}
               />
-              <button onClick={sendMessage}>Send</button>
+              <button 
+                onClick={sendMessage}
+                disabled={!advisorSession || !messageInput.trim()}
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>

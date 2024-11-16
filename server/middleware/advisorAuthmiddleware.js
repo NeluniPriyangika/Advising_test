@@ -1,27 +1,27 @@
-const User = require('../models/user');
-const FBUser = require('../models/FBuser');
+const authHandlers = require('./authHandlers');
 
 const advisorAuthMiddleware = async (req, res, next) => {
   try {
-    // Check for various ID types
-    const { googleId, facebookId, userId, email } = req.body;
+    // Extract all possible identifiers from request
+    const { userId, googleId, facebookId, email } = req.body;
 
-    let user;
-
-    // Priority order: Direct ID > Social IDs > Email
-    if (userId) {
-      user = await User.findById(userId) || await FBUser.findById(userId);
-    } else if (googleId) {
-      user = await User.findOne({ googleId });
-    } else if (facebookId) {
-      user = await FBUser.findOne({ facebookId });
-    } else if (email) {
-      user = await User.findOne({ email }) || await FBUser.findOne({ email });
+    // No identifiers provided
+    if (!userId && !googleId && !facebookId && !email) {
+      return res.status(401).json({ error: 'Authentication credentials required' });
     }
 
-    if (!user) {
+    const currentUser = await authHandlers.getCurrentUser({
+      userId,
+      googleId,
+      facebookId,
+      email
+    });
+
+    if (!currentUser) {
       return res.status(404).json({ error: 'User not found' });
     }
+
+    const { user } = currentUser;
 
     if (user.userType !== 'advisor') {
       return res.status(403).json({ error: 'Only advisors can access chat features' });
@@ -31,21 +31,23 @@ const advisorAuthMiddleware = async (req, res, next) => {
       return res.status(403).json({ error: 'Please complete your advisor profile first' });
     }
 
-    // Enhanced advisor info
+    // Add user info to request
     req.advisor = {
       id: user._id,
-      googleId: user.googleId,
-      facebookId: user.facebookId,
       email: user.email,
       name: user.fullName || user.displayName,
       perMinuteRate: user.perMinuteRate,
       timeZone: user.timeZone,
-      authType: user.googleId ? 'google' : 'facebook',
-      userType: user.userType
+      authType: currentUser.authType,
+      userType: user.userType,
+      // Add IDs based on auth type
+      ...(currentUser.authType === 'google' ? { googleId: user.googleId } : {}),
+      ...(currentUser.authType === 'facebook' ? { facebookId: user.facebookId } : {})
     };
 
     next();
   } catch (err) {
+    console.error('Auth middleware error:', err);
     res.status(401).json({ error: 'Authentication failed' });
   }
 };
