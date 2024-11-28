@@ -3,17 +3,15 @@ const authHandlers = require('./authHandlers');
 const advisorAuthMiddleware = async (req, res, next) => {
   try {
     // Extract all possible identifiers from request
-    const { userId, googleId, facebookId, email } = req.body;
+    const { userId, email } = req.body;
 
     // No identifiers provided
-    if (!userId && !googleId && !facebookId && !email) {
+    if (!userId &&  !email) {
       return res.status(401).json({ error: 'Authentication credentials required' });
     }
 
     const currentUser = await authHandlers.getCurrentUser({
       userId,
-      googleId,
-      facebookId,
       email
     });
 
@@ -41,7 +39,7 @@ const advisorAuthMiddleware = async (req, res, next) => {
       authType: currentUser.authType,
       userType: user.userType,
       // Add IDs based on auth type
-      ...(currentUser.authType === 'google' ? { googleId: user.googleId } : {}),
+      ...(currentUser.authType === 'google' ? { userId: user.userId } : {}),
       ...(currentUser.authType === 'facebook' ? { facebookId: user.facebookId } : {})
     };
 

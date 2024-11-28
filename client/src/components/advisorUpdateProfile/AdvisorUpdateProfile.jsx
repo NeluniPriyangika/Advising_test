@@ -6,6 +6,7 @@ import Footer from '../footer/Footer';
 import Navbar2 from '../navbar2/Navbar2';
 
 const AdvisorUpdateProfile = () => {
+  const [userId, setUserId] = useState(null);
   const [profileData, setProfileData] = useState({
     fullName: '',
     displayName: '',
@@ -36,10 +37,13 @@ const AdvisorUpdateProfile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const pathParts = window.location.pathname.split('/');
+    const userIdFromUrl = pathParts[pathParts.length - 1];
+    setUserId(userIdFromUrl);
     // Fetch existing user data if available
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/google-login');
+        const response = await fetch(`http://localhost:5000/api/google-current-user/${userIdFromUrl}`);
         if (response.ok) {
           const userData = await response.json();
           setProfileData(prevData => ({...prevData, ...userData}));
@@ -48,7 +52,9 @@ const AdvisorUpdateProfile = () => {
         console.error('Error fetching user data:', error);
       }
     };
-    fetchUserData();
+    if (userIdFromUrl && userIdFromUrl !== 'undefined') {
+      fetchUserData();
+    }
   }, []);
 
   const handleInputChange = (e) => {
@@ -118,7 +124,7 @@ const AdvisorUpdateProfile = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/update-advisor-profile', {
+      const res = await fetch(`http://localhost:5000/api/update-advisor-profile/${userId}`, {
         method: 'POST',
         body: formData,
       });
@@ -364,7 +370,7 @@ const AdvisorUpdateProfile = () => {
               placeholder="Twitter URL"
             />
 
-            <button  className='Advisor-profileUpdatebutton' type="submit">Update Profile</button>
+            <button  className='Advisor-profileUpdatebutton' type="submit" onClick={handleSubmit}>Update Profile</button>
           </div> 
         </form>
         <div className='advisor-profile-update-advantagesasAdvisor'>

@@ -1,9 +1,8 @@
 // server/middleware/authHandlers.js
 const User = require('../models/user');
-const FBUser = require('../models/FBuser');
 
 const authHandlers = {
-  findUserByPriority: async ({ userId, googleId, facebookId, email }) => {
+  findUserByPriority: async ({ userId, email }) => {
     try {
       let user = null;
       let authType = null;
@@ -11,11 +10,11 @@ const authHandlers = {
       // Priority 1: Direct ID
       if (userId) {
         user = await User.findById(userId) || await FBUser.findById(userId);
-        authType = user?.googleId ? 'google' : 'facebook';
+        authType = user?.userId ? 'google' : 'facebook';
       }
       // Priority 2: Google ID
-      else if (googleId) {
-        user = await User.findOne({ googleId });
+      else if (userId) {
+        user = await User.findOne({ userId });
         authType = 'google';
       }
       // Priority 3: Facebook ID
@@ -26,7 +25,7 @@ const authHandlers = {
       // Priority 4: Email
       else if (email) {
         user = await User.findOne({ email }) || await FBUser.findOne({ email });
-        authType = user?.googleId ? 'google' : 'facebook';
+        authType = user?.userId ? 'google' : 'facebook';
       }
 
       if (!user) {
