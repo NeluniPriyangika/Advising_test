@@ -23,7 +23,7 @@ router.post('/update-advisor-profile/:userId', upload.single('profilePhoto'), as
 
     const { fullName, displayName, qualifications, certifications, description, 
       perMinuteRate, timeZone, availableDays, availableHoursstart,availableHoursend, languages, 
-      phoneNumber,paypalpaymentlink, socialLinks , address, email } = req.body;
+      phoneNumber, socialLinks , address } = req.body;
 
     //const profilePhoto = req.file ? req.file.path : undefined;
 
@@ -38,7 +38,6 @@ router.post('/update-advisor-profile/:userId', upload.single('profilePhoto'), as
 
 
       user.fullName = fullName;
-      user.email = email;
       user.address= address;
       user.displayName = displayName;
       user.qualifications = qualifications;
@@ -51,7 +50,6 @@ router.post('/update-advisor-profile/:userId', upload.single('profilePhoto'), as
       user.availableHoursend = availableHoursend;
       user.languages = languages;
       user.phoneNumber = phoneNumber;
-      user.paypalpaymentlink = paypalpaymentlink;
       user.socialLinks = JSON.parse(socialLinks);
       user.profileCompleted = true;
   

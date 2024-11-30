@@ -24,8 +24,6 @@ const AdvisorUpdateProfile = () => {
     availableHoursend: '',
     languages: '',
     phoneNumber: '',
-    email: '',
-    paypalpaymentlink: '',
     socialLinks: {
       facebook: '',
       linkedin: '',
@@ -184,7 +182,7 @@ const AdvisorUpdateProfile = () => {
 
             <h4>Add Your Registered Email Address</h4>
 
-            <input
+            {/*<input
               className='advisor-updateform-input1'
               type="email"
               name="email"
@@ -192,7 +190,7 @@ const AdvisorUpdateProfile = () => {
               onChange={handleInputChange}
               placeholder="Email"
               required
-            />
+            />*/}
 
             <input
               className='advisor-updateform-input1'
@@ -334,7 +332,7 @@ const AdvisorUpdateProfile = () => {
 
             <h4>Add your PayPal payment link</h4>
 
-            <input
+            {/*<input
                 className='advisor-updateform-input1'
                 type="url"
                 name="availableHoursend"
@@ -342,7 +340,7 @@ const AdvisorUpdateProfile = () => {
                 onChange={handleInputChange}
                 placeholder="Payment Link"
                 
-              />
+              />*/}
 
             <h4>Social Links</h4>
             <input

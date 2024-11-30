@@ -101,10 +101,14 @@ router.post('/facebook-login', async (req, res) => {
       }
     }
 
-    // Determine redirect path
-    const redirectTo = isNewUser || !user.profileCompleted
-      ? `/${userType}-update-profile`
-      : `/${userType}-profile`;
+    let redirectTo;
+      if (isNewUser || !user.profileCompleted) {
+        // New user or existing user with incomplete profile
+        redirectTo = userType === 'advisor' ? `/advisor-update-profile/${userID}` : `/seeker-update-profile/${userID}`;
+      } else {
+        // Existing user with completed profile
+        redirectTo = user.userType === 'advisor' ? '/advisor-profile' : '/seeker-profile';
+      }
 
     // Send response
     return res.status(200).json({
