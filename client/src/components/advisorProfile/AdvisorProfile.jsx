@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams} from 'react-router-dom';
 import './advisorPrifile.css';
 import Navbar2 from '../navbar2/Navbar2';
 import Footer from '../footer/Footer';
@@ -38,8 +38,52 @@ const SeekerReviewsContainer = (props) => (
 );
 
 function AdvisorProfile() {
-
   const navigate = useNavigate ();
+  const { userId } = useParams();
+  const [advisor, setAdvisor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    
+    const fetchAdvisorData = async () => {
+      try {
+        console.log('Current user:', currentUser); // Debug log
+
+        if (!userId) {
+          setError('No user ID found');
+          return;
+        }
+
+        console.log('Fetching advisor data for userId:', userId); // Debug log
+
+        const response = await fetch(`http://localhost:5000/api/advisor-profile/${userId}`);
+        console.log('Response status:', response.status); // Debug log
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch advisor data');
+        }
+
+        const data = await response.json();
+        console.log('Received advisor data:', data); // Debug log
+        setAdvisor(data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching advisor data:', err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchAdvisorData();
+  }, [userId]);
+
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!advisor) return <div>No advisor data found</div>;
 
   const seekerReviews = [
     {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`“I’ve always struggled with budgeting, but the financial Advisor I connected with made everything so simple. I feel confident in managing my money now`, imgUrl: 'https://unsplash.it/200/200'},
@@ -59,62 +103,63 @@ function AdvisorProfile() {
           <AdvisorSideBar />
         </div>
         <div className='advisorprofile-rightcontainer'>
-            <div className='advisorprofile-rightcontainer-top'>
-              <div className='advisorprofile-userdetails1'>
-                  <div className='advisorprofile-header' >
-                    <h1>Kasun Gayantha</h1>
-                    <div className='advisorprofile-onlinestatus'></div>
-                  </div>
-                  <hr />
-                  <div className='advisorprofile-rating'>
-                    <h4>Rating</h4>
-                    <ReadOnlyRating/>
-                  </div>
-                  <div className='advisorprofile-profexperiance-cont'>
-                    <h4 className='advisorprofile-profexperiance'>Love & Financial Advisor</h4>
-                    <h1>|</h1>
-                    <h4 className='advisorprofile-profexperiance-years'> 15+ Years of Experience</h4>
-                  </div>
-                  <p className='advisorprofile-bio'>
-                    Hi, I’m Sukumal, a seasoned business consultant specializing in helping entrepreneurs 
-                    and small business owners grow and
-                    optimize their ventures. With over 15 years of experience across various industries, I’ve worked with startups, established
-                    businesses, and everything in between. My expertise ranges from business strategy, financial planning, and operations management 
-                    to scaling businesses and improving profitability. <br />
-                    My passion is helping others succeed by providing actionable insights and personalized strategies that make a real difference. Whether you’re looking to launch a new business, streamline your operations, or plan for long-term growth, I’m here to help guide
-                    you every step of the way. Let’s work together to turn your goals into reality!
-                  </p>
-                  <h4>Certifications or Qualifications</h4>
-                  <p>Certified business advisor /
-                    certified mental consultant USA
-                  </p>
-                  <h4>Available Days</h4>
-                  <div className='advisorprofile-vailabledays'>
-                    <h6>Sunday, Monday, Friday</h6>
-                  </div>
-                  <h4>Available Time</h4>
-                  <div className='advisorprofile-vailabledays'>
-                    <h6>From 08.00am EST to 05.00pm EST</h6>
-                  </div> 
+          <div className='advisorprofile-rightcontainer-top'>
+            <div className='advisorprofile-userdetails1'>
+              <div className='advisorprofile-header'>
+                <h1>{advisor.name}</h1>
+                <div className='advisorprofile-onlinestatus'></div>
               </div>
-
-              <div className='advisorprofile-userdetails2'>
-                <div>
-                    <img className='advisorprofile-image' src={Advisor1} alt="" />
-                </div>
-                <button className='advisorprofile-messagingbutton' onClick={() => navigate('/seeker-middle-chat')} >Start Messaging</button>
-                <h2 className='advisorprofile-perminuterate'>2 USD / 1 min</h2>
-                <h2 className='advisorprofile-language'>Language : English</h2>
-                
+              <hr />
+              <div className='advisorprofile-rating'>
+                <h4>Rating</h4>
+                <ReadOnlyRating /*value={advisor.rating}*/ />
               </div>
-
-
-            </div>
-            <div className='advisorprofile-rightcontainer-bottom'>
-              <div className='advisorprofile-seeker-rewiews-content'>
-                <SeekerReviewsContainer reviews={ seekerReviews } />
+              <div className='advisorprofile-profexperiance-cont'>
+                <h4 className='advisorprofile-profexperiance'>{advisor.experience}</h4>
+                <h1>|</h1>
+                <h4 className='advisorprofile-profexperiance-years'>{advisor.experience}</h4>
+              </div>
+              <p className='advisorprofile-bio'>{advisor.bio}</p>
+              <h4>Certifications or Qualifications</h4>
+              <p>{advisor.certifications}</p>
+              <h4>Available Days</h4>
+              <div className='advisorprofile-vailabledays'>
+                <h6>{advisor.availableDays?.join(', ')}</h6>
+              </div>
+              <h4>Available Time</h4>
+              <div className='advisorprofile-vailabledays'>
+                <h6>{advisor.availableTimeStart} to {advisor.availableTimeEnd}</h6>
               </div>
             </div>
+
+            <div className='advisorprofile-userdetails2'>
+              <div>
+                <img 
+                  className='advisorprofile-image' 
+                  src={advisor.profilePhotoUrl || Advisor1} 
+                  alt={advisor.name} 
+                />
+              </div>
+              <button 
+                className='advisorprofile-messagingbutton' 
+                onClick={() => navigate('/seeker-middle-chat')}
+              >
+                Start Messaging
+              </button>
+              <h2 className='advisorprofile-perminuterate'>
+                {advisor.ratePerMinute} USD / 1 min
+              </h2>
+              <h2 className='advisorprofile-language'>
+                  Language: {advisor.languages || 'English'}
+              </h2>
+            </div>
+          </div>
+          
+          <div className='advisorprofile-rightcontainer-bottom'>
+            <div className='advisorprofile-seeker-rewiews-content'>
+              <SeekerReviewsContainer reviews={seekerReviews} />
+            </div>
+          </div>
         </div>
       </div>
       <Footer />

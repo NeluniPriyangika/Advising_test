@@ -82,6 +82,7 @@ const profileUpdateRoutes = require('./routes/profileupdate');
 const seekerProfileUpdateRoutes = require('./routes/seekerprofileupdate');
 const chatRoutes = require('./routes/chatRoutes');
 const advisorChatRoutes = require('./routes/adviorChatRoute');
+const advisorProfileRoutes = require('./routes/advisorprofile');
 
 // Apply routes
 app.use('/api/auth', authRoutes);
@@ -90,6 +91,7 @@ app.use('/api', profileUpdateRoutes);
 app.use('/api', seekerProfileUpdateRoutes);
 app.use('/chat', chatRoutes);
 app.use('/advisor-chat', advisorChatRoutes);
+app.use('/api', advisorProfileRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

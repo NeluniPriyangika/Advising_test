@@ -38,7 +38,7 @@ router.post('/google-login', async (req, res) => {
       redirectTo = userType === 'advisor' ? `/advisor-update-profile/${sub}` : `/seeker-update-profile/${sub}`;
     } else {
       // Existing user with completed profile
-      redirectTo = user.userType === 'advisor' ? '/advisor-profile' : '/seeker-profile';
+      redirectTo = user.userType === 'advisor' ? `/advisor-profile/${user.userId}` : '/seeker-profile';
     }
 
     res.json({ user, redirectTo, isNewUser });

@@ -36,7 +36,7 @@ const App = () => {
           <Route path="/advisor-update-profile/:userId" element={<PrivateRoute><AdvisorUpdateProfilePage /></PrivateRoute>} />
           <Route path="/seeker-update-profile" element={<PrivateRoute><SeekerUpdateProfilePage /></PrivateRoute>} />
           <Route path="/seeker-home" element={<PrivateRoute><SeekerHomePage /></PrivateRoute> } />
-          <Route path="/advisor-profile" element={<PrivateRoute><AdvisorProfilePage /></PrivateRoute> } />
+          <Route path="/advisor-profile/:userId" element={<PrivateRoute><AdvisorProfilePage /></PrivateRoute>} />
           <Route path="/seeker-profile" element={<PrivateRoute><SeekerProfilePage /></PrivateRoute> } />
           <Route path="/seeker-middle-chat" element={<PrivateRoute><SeekerMiddleChatPage /></PrivateRoute> } />
           <Route path="/seeker-chat" element={<PrivateRoute><SeekerChatPage /></PrivateRoute> } />

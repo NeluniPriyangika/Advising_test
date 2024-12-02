@@ -107,7 +107,7 @@ router.post('/facebook-login', async (req, res) => {
         redirectTo = userType === 'advisor' ? `/advisor-update-profile/${userID}` : `/seeker-update-profile/${userID}`;
       } else {
         // Existing user with completed profile
-        redirectTo = user.userType === 'advisor' ? '/advisor-profile' : '/seeker-profile';
+        redirectTo = user.userType === 'advisor' ? `/advisor-profile/${user.userId}` : '/seeker-profile';
       }
 
     // Send response
