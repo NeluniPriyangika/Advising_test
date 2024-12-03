@@ -48,6 +48,7 @@ const SeekerUpdateProfile = () => {
     {id: 6, homeRating:<ReadOnlyRating/>, title: 'Karoline Jude',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/200'},
     {id: 7, homeRating:<ReadOnlyRating/>, title: 'charle Jhosep',subtitle:`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.`, imgUrl: 'https://unsplash.it/200/201'},  ]
 
+  const [userId, setUserId] = useState(null);  
   const [profileData, setProfileData] = useState({
     fullName: '',
     address: '',
@@ -62,10 +63,13 @@ const SeekerUpdateProfile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const pathParts = window.location.pathname.split('/');
+    const userIdFromUrl = pathParts[pathParts.length - 1];
+    setUserId(userIdFromUrl);
     // Fetch existing user data if available
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/google-login');
+        const response = await fetch(`http://localhost:5000/api/google-current-user/${userIdFromUrl}`);
         if (response.ok) {
           const userData = await response.json();
           setProfileData(prevData => ({...prevData, ...userData}));
@@ -123,13 +127,13 @@ const SeekerUpdateProfile = () => {
     }  
 
     try {
-      const res = await fetch('http://localhost:5000/api/update-seeker-profile', {
+      const res = await fetch(`http://localhost:5000/api/update-seeker-profile/${userId}`, {
         method: 'POST',
         body: formData,
       });
       const data = await res.json();
       if (data.success) {
-        navigate('/seeker-home');
+        navigate('/seeker-profile');
       } else {
         // Handle error
         alert(`Profile update failed: ${data.error || 'An unknown error occurred.'}`);
@@ -190,19 +194,6 @@ const SeekerUpdateProfile = () => {
                 required
             />
 
-            <h4>Add Your Registerd Email</h4>
-
-            <input
-              className='seeker-updateprofile-form-input'
-              type="email"
-              name="email"
-              value={profileData.email}
-              onChange={handleInputChange}
-              placeholder="Email"
-              required
-            />
-
-
             <DatePicker
               className='datepicker'
               selected={profileData.birthday}
@@ -245,7 +236,7 @@ const SeekerUpdateProfile = () => {
               />
             </label>
 
-            <button className='seeker-profile-update-button' type="submit">Update Profile</button>
+            <button className='seeker-profile-update-button' type="submit" onClick={handleSubmit}>Update Profile</button>
           </form>
 
         </div>

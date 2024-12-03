@@ -16,13 +16,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post('/update-seeker-profile', upload.single('profilePhoto'), async (req, res) => {
+router.post('/update-seeker-profile/:userId', upload.single('profilePhoto'), async (req, res) => {
   try {
+    const { userId } = req.params;
+
     const { fullName, address, phoneNumber, email, description, language, birthday } = req.body;
 
     // TODO: Replace this with actual user authentication
     // For now, we'll just use the email to find the user
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ userId: userId });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
