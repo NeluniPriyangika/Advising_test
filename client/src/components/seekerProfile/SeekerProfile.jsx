@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams} from 'react-router-dom';
 import './seekerPrifile.css';
 import Navbar2 from '../navbar2/Navbar2';
 import Footer from '../footer/Footer';
@@ -38,6 +39,53 @@ const AdvisorReviewsContainer = (props) => (
 
 function SeekerProfile() {
 
+  const navigate = useNavigate ();
+  const { userId } = useParams();
+  const [seeker, setSeeker] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    
+    const fetchSeekerData = async () => {
+      try {
+        console.log('Current user:', currentUser); // Debug log
+
+        if (!userId) {
+          setError('No user ID found');
+          return;
+        }
+
+        console.log('Fetching advisor data for userId:', userId); // Debug log
+
+        const response = await fetch(`http://localhost:5000/api/seeker-profile/${userId}`);
+        console.log('Response status:', response.status); // Debug log
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch seeker data');
+        }
+
+        const data = await response.json();
+        console.log('Received seeker data:', data); // Debug log
+        setSeeker(data);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching seeker data:', err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchSeekerData();
+  }, [userId]);
+
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!seeker) return <div>No advisor data found</div>;
+
   const seekerReviews = [
     {id: 1, homeRating:<ReadOnlyRating/>, title: 'Serenity Stone',subtitle:`“I’ve always struggled with budgeting, but the financial Advisor I connected with made everything so simple. I feel confident in managing my money now`, imgUrl: 'https://unsplash.it/200/200'},
     {id: 2, homeRating:<ReadOnlyRating/>, title: 'Michel Jackson',subtitle:`“I’ve always struggled with budgeting, but the financial Advisor I connected with made everything so simple. I feel confident in managing my money now`, imgUrl: 'https://unsplash.it/201/200'},
@@ -59,7 +107,7 @@ function SeekerProfile() {
             <div className='seekerprofile-rightcontainer-top'>
               <div className='seekerprofile-userdetails1'>
                   <div className='seekerprofile-header' >
-                    <h1>Nisal Prabhashwara</h1>
+                    <h1>{seeker.name}</h1>
                     <div className='seekerprofile-onlinestatus'></div>
                   </div>
                   <hr />
@@ -67,25 +115,22 @@ function SeekerProfile() {
                     <h4>Rating</h4>
                     <ReadOnlyRating/>
                   </div>
-                  <p className='seekerprofile-bio'>
-                    Hi, I’m Sukumal, a seasoned business consultant specializing in helping entrepreneurs 
-                    and small business owners grow and
-                    optimize their ventures. With over 15 years of experience across various industries, I’ve worked with startups, established
-                    businesses, and everything in between. My expertise ranges from business strategy, financial planning, and operations management 
-                    to scaling businesses and improving profitability. <br />
-                    My passion is helping others succeed by providing actionable insights and personalized strategies that make a real difference. Whether you’re looking to launch a new business, streamline your operations, or plan for long-term growth, I’m here to help guide
-                    you every step of the way. Let’s work together to turn your goals into reality!
-                  </p>
+                  <p className='seekerprofile-bio'>{seeker.description}</p>
                   <h4>My Interests</h4>
-                  <p> Business , Astrology , Travelling , Food </p>
+                  <p> {seeker.interest} </p>
               </div>
 
               <div className='seekerprofile-userdetails2'>
                 <div>
-                    <img className='seekerprofile-image' src={Advisor2} alt="" />
+                    <img className='seekerprofile-image' src={seeker.profilePhotoUrl || Advisor2} alt={seeker.name} />
                 </div>
-                <button className='seekerprofile-messagingbutton'>Start Messaging</button>
-                <h2 className='seekerprofile-language'>Language : English</h2>
+                <button 
+                  className='seekerprofile-messagingbutton' 
+                  onClick={() => navigate('/advisor-chat')}
+                >
+                  Start Messaging
+                </button>
+                <h2 className='seekerprofile-language'>Language : {seeker.language || 'English'}</h2>
                 
               </div>
 

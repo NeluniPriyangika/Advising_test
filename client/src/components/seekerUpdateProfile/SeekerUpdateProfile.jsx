@@ -56,7 +56,8 @@ const SeekerUpdateProfile = () => {
     email: '',
     description: '',
     language : '',
-    birthday : ''
+    birthday : '',
+    interest: '',
 
   });
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -212,6 +213,14 @@ const SeekerUpdateProfile = () => {
                 value={profileData.description}
                 onChange={handleInputChange}
                 placeholder="Short Bio or Description"
+            />
+
+            <textarea 
+                className='seeker-profile-update-interests'
+                name="interest"
+                value={profileData.interest}
+                onChange={handleInputChange}
+                placeholder="What are your interests EX : painting, traveling etc."
             />
 
             <input

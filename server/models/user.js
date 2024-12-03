@@ -78,6 +78,9 @@ const userSchema = new mongoose.Schema({
   birthday: {
     type: Date,  // Store the birthday as a Date object
   },
+  interest:{
+    type: String,
+  },
   profileCompleted: {
     type: Boolean,
     default: false,

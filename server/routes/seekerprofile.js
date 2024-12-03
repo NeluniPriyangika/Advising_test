@@ -28,10 +28,12 @@ router.get('/seeker-profile/:userId', async (req, res) => {
       fullName: seeker.fullName,
       address: seeker.address,
       phoneNumber: seeker.phoneNumber,
-      profileCompleted: seeker.true,
       description: seeker.description,
       languages: seeker.language,
       birthday: seeker.birthday,
+      interest: seeker.interest,
+      profilePhotoUrl: seeker.profilePhotoUrl,
+      profileCompleted: seeker.profileCompleted
     });
 
   } catch (error) {
