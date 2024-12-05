@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import HomePage from './pages/homePage/HomePage';
 import LoginPage from './pages/loginPage/LoginPage';
@@ -19,9 +19,16 @@ import PaymentPage from './pages/paymentPage/PaymentPage';
 import PrivacyPolicyPage from './pages/privacyPolicyPage/PrivacyPolicyPage';
 
 
+// PrivateRoute component
 const PrivateRoute = ({ children }) => {
-  const user = localStorage.getItem('user');
-  return user ? children : <Navigate to="/" replace />;
+  const user = JSON.parse(localStorage.getItem('user'));
+  const location = useLocation();
+
+  if (!user) {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
+
+  return children;
 };
 
 const App = () => {

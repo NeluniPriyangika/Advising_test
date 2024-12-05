@@ -134,7 +134,7 @@ const SeekerUpdateProfile = () => {
       });
       const data = await res.json();
       if (data.success) {
-        navigate('/seeker-profile');
+        navigate(`/seeker-profile/${userId}`);
       } else {
         // Handle error
         alert(`Profile update failed: ${data.error || 'An unknown error occurred.'}`);

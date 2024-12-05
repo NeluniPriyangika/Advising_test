@@ -20,7 +20,7 @@ router.post('/update-seeker-profile/:userId', upload.single('profilePhoto'), asy
   try {
     const { userId } = req.params;
 
-    const { fullName, address, phoneNumber, email, description, language, birthday } = req.body;
+    const { fullName, address, phoneNumber, email, description, language, birthday, interest } = req.body;
 
     // TODO: Replace this with actual user authentication
     // For now, we'll just use the email to find the user
@@ -37,6 +37,7 @@ router.post('/update-seeker-profile/:userId', upload.single('profilePhoto'), asy
     user.description = description;
     user.languages = language;
     user.birthday = birthday;
+    user.interest = interest;
 
     if (req.file) {
       user.profilePhotoUrl = `/uploads/${req.file.filename}`;
