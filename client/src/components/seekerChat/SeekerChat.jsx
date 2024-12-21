@@ -7,7 +7,7 @@ import Footer from '../footer/Footer';
 import Advisor2 from '../../assets/Advisor2.jpg';
 import io from 'socket.io-client';
 import { MessageBox } from 'react-chat-elements';
-import 'react-chat-elements/dist/main.css'; // Import chat elements CSS
+import 'react-chat-elements/dist/main.css'; // Import chat elements CSS..
 
 const SeekerChatHistory = (props) => (
     <div className="SeekerChat-chat-history">

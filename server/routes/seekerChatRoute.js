@@ -1,38 +1,38 @@
 const express = require('express');
 const router = express.Router();
-const { AdvisorMessage, AdvisorChatSession } = require('../models/advisorChatModel');
+const { SeekerMessage, SeekerChatSession } = require('../models/seekerChatModel');
 const User = require('../models/user');
 
 // Create new chat session
-router.post('/advisor-session/:userId', async (req, res) => {
+router.post('/seeker-session/:userId', async (req, res) => {
   try {
-    const { advisorId, seekerId } = req.body;
+    const { seekerId, advisorId } = req.body;
 
-    if (!advisorId || !seekerId) {
-      return res.status(400).json({ error: 'Both advisorId and seekerId are required' });
+    if (!seekerId || !advisorId) {
+      return res.status(400).json({ error: 'Both seekerId and advisorId are required' });
     }
 
-    // Verify both users exist and advisor has correct type
-    const advisor = await User.findOne({ userId: advisorId });
+    // Verify both users exist and seeker has correct type
     const seeker = await User.findOne({ userId: seekerId });
+    const advisor = await User.findOne({ userId: advisorId });
 
-    if (!advisor || !seeker) {
-      return res.status(404).json({ error: 'Advisor or seeker not found' });
+    if (!seeker || !advisor) {
+      return res.status(404).json({ error: 'Seeker or advisor not found' });
     }
 
-    if (advisor.userType !== 'advisor') {
-      return res.status(403).json({ error: 'Specified advisor is not registered as an advisor' });
+    if (seeker.userType !== 'seeker') {
+      return res.status(403).json({ error: 'Specified seeker is not registered as an seeker' });
     }
 
-    const advisorSession = new AdvisorChatSession({
-      advisor: advisor._id,
+    const seekerSession = new SeekerChatSession({
       seeker: seeker._id,
+      advisor: advisor._id,
       startTime: new Date(),
       status: 'active'
     });
 
-    await advisorSession.save();
-    res.status(201).json(advisorSession);
+    await seekerSession.save();
+    res.status(201).json(seekerSession);
   } catch (error) {
     console.error('Session creation error:', error);
     res.status(500).json({
@@ -43,7 +43,7 @@ router.post('/advisor-session/:userId', async (req, res) => {
 });
 
 // Send message
-router.post('/advisor-message/:userId', async (req, res) => {
+router.post('/seeker-message/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
     const { sessionId, text, position } = req.body;
@@ -53,10 +53,10 @@ router.post('/advisor-message/:userId', async (req, res) => {
     }
 
     // Find the active session
-    const session = await AdvisorChatSession.findOne({
+    const session = await SeekerChatSession.findOne({
       _id: sessionId,
       status: 'active'
-    }).populate('advisor seeker');
+    }).populate('seeker advisor');
 
     if (!session) {
       return res.status(404).json({ error: 'Active chat session not found' });
@@ -64,9 +64,9 @@ router.post('/advisor-message/:userId', async (req, res) => {
 
     // Determine sender and receiver based on userId and position
     const sender = userId;
-    const receiver = position === 'right' ? session.seeker.userId : session.advisor.userId;
+    const receiver = position === 'right' ? session.advisor.userId : session.seeker.userId;
 
-    const advisorMessage = new AdvisorMessage({
+    const seekerMessage = new SeekerMessage({
       sender: sender,
       receiver: receiver,
       text: text,
@@ -75,15 +75,15 @@ router.post('/advisor-message/:userId', async (req, res) => {
       timestamp: new Date()
     });
 
-    session.messages.push(advisorMessage);
+    session.messages.push(seekerMessage);
     await session.save();
 
     // Socket.IO emission if available
     if (req.app.get('io')) {
-      req.app.get('io').to(session._id.toString()).emit('message', advisorMessage);
+      req.app.get('io').to(session._id.toString()).emit('message', seekerMessage);
     }
 
-    res.status(201).json(advisorMessage);
+    res.status(201).json(seekerMessage);
   } catch (error) {
     console.error('Message sending error:', error);
     res.status(500).json({
@@ -94,7 +94,7 @@ router.post('/advisor-message/:userId', async (req, res) => {
 });
 
 // Get chat history
-router.get('/advisor-history/:userId', async (req, res) => {
+router.get('/seeker-history/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
@@ -107,14 +107,14 @@ router.get('/advisor-history/:userId', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const advisorSessions = await AdvisorChatSession.find({
+    const seekerSessions = await SeekerChatSession.find({
       $or: [
-        { advisor: user._id },
-        { seeker: user._id }
+        { seeker: user._id },
+        { advisor: user._id }
       ]
-    }).populate('advisor seeker messages');
+    }).populate('seeker advisor messages');
 
-    res.json(advisorSessions);
+    res.json(seekerSessions);
   } catch (error) {
     console.error('History fetch error:', error);
     res.status(500).json({
@@ -125,7 +125,7 @@ router.get('/advisor-history/:userId', async (req, res) => {
 });
 
 // End chat session
-router.put('/advisor-session/:userId/:sessionId/end', async (req, res) => {
+router.put('/seeker-session/:userId/:sessionId/end', async (req, res) => {
   try {
     const { userId, sessionId } = req.params;
 
@@ -133,7 +133,7 @@ router.put('/advisor-session/:userId/:sessionId/end', async (req, res) => {
       return res.status(400).json({ error: 'Valid session ID required' });
     }
 
-    const session = await AdvisorChatSession.findById(sessionId);
+    const session = await SeekerChatSession.findById(sessionId);
     if (!session) {
       return res.status(404).json({ error: 'Chat session not found' });
     }
@@ -144,8 +144,8 @@ router.put('/advisor-session/:userId/:sessionId/end', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if (session.advisor.toString() !== user._id.toString() && 
-        session.seeker.toString() !== user._id.toString()) {
+    if (session.seeker.toString() !== user._id.toString() && 
+        session.advisor.toString() !== user._id.toString()) {
       return res.status(403).json({ error: 'User not authorized to end this session' });
     }
 

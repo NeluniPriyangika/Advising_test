@@ -15,7 +15,7 @@ const API_URL = 'http://localhost:5000/advisor-chat';
 const socket = io(SOCKET_URL);
 
 function AdvisorChat() {
-  // States
+  // States....
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [isTimerActive, setIsTimerActive] = useState(false);

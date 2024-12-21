@@ -53,23 +53,26 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('Connected to MongoDB'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
-// Socket.IO connection handling
+// Enhanced Socket.IO connection handling
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
-  
-  socket.on('join', (advisorSessionId) => {
-    socket.join(advisorSessionId);
+
+  // Handle joining both advisor and seeker chat rooms
+  socket.on('join', (sessionId) => {
+    socket.join(sessionId);
+    console.log(`Socket ${socket.id} joined session ${sessionId}`);
   });
-  
+
+  // Handle messages for both advisor and seeker chats
   socket.on('message', async (data) => {
     try {
-      const { advisorSessionId, advisorMessage } = data;
-      io.to(advisorSessionId).emit('message', advisorMessage);
+      const { sessionId, message } = data;
+      io.to(sessionId).emit('message', message);
     } catch (error) {
-      console.error('Socket error:', error);
+      console.error('Socket message error:', error);
     }
   });
-  
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
@@ -82,6 +85,7 @@ const profileUpdateRoutes = require('./routes/profileupdate');
 const seekerProfileUpdateRoutes = require('./routes/seekerprofileupdate');
 const chatRoutes = require('./routes/chatRoutes');
 const advisorChatRoutes = require('./routes/adviorChatRoute');
+const seekerChatRoutes = require('./routes/seekerChatRoute');
 const advisorProfileRoutes = require('./routes/advisorprofile');
 const seekerProfileRoutes = require('./routes/seekerprofile')
 
@@ -90,8 +94,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/auth', fbAuthRoutes);
 app.use('/api', profileUpdateRoutes);
 app.use('/api', seekerProfileUpdateRoutes);
-app.use('/chat', chatRoutes);
-app.use('/advisor-chat', advisorChatRoutes);
+app.use('/api/chat', chatRoutes); // Changed to /api/chat for consistency
+app.use('/api/advisor-chat', advisorChatRoutes); // Changed to /api/advisor-chat
+app.use('/api/seeker-chat', seekerChatRoutes); // Add this line
 app.use('/api', advisorProfileRoutes);
 app.use('/api', seekerProfileRoutes);
 
