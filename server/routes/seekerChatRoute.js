@@ -3,6 +3,31 @@ const router = express.Router();
 const { SeekerMessage, SeekerChatSession } = require('../models/seekerChatModel');
 const User = require('../models/user');
 
+// Get seeker by ID
+router.get('/seeker/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (user.userType !== 'seeker') {
+      return res.status(403).json({ error: 'User is not a seeker' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    console.error('Error fetching seeker:', error);
+    res.status(500).json({ error: 'Failed to fetch seeker' });
+  }
+});
+
 // Create new chat session
 router.post('/seeker-session/:userId', async (req, res) => {
   try {
@@ -12,7 +37,7 @@ router.post('/seeker-session/:userId', async (req, res) => {
       return res.status(400).json({ error: 'Both seekerId and advisorId are required' });
     }
 
-    // Verify both users exist and seeker has correct type
+    // Verify both users exist
     const seeker = await User.findOne({ userId: seekerId });
     const advisor = await User.findOne({ userId: advisorId });
 
@@ -21,7 +46,7 @@ router.post('/seeker-session/:userId', async (req, res) => {
     }
 
     if (seeker.userType !== 'seeker') {
-      return res.status(403).json({ error: 'Specified seeker is not registered as an seeker' });
+      return res.status(403).json({ error: 'User is not registered as a seeker' });
     }
 
     const seekerSession = new SeekerChatSession({
@@ -32,13 +57,13 @@ router.post('/seeker-session/:userId', async (req, res) => {
     });
 
     await seekerSession.save();
+    
+    // Populate advisor details before sending response
+    await seekerSession.populate('advisor');
     res.status(201).json(seekerSession);
   } catch (error) {
     console.error('Session creation error:', error);
-    res.status(500).json({
-      error: 'Failed to create chat session',
-      details: error.message
-    });
+    res.status(500).json({ error: 'Failed to create chat session' });
   }
 });
 
@@ -52,25 +77,20 @@ router.post('/seeker-message/:userId', async (req, res) => {
       return res.status(400).json({ error: 'SessionId, text and position are required' });
     }
 
-    // Find the active session
     const session = await SeekerChatSession.findOne({
       _id: sessionId,
       status: 'active'
-    }).populate('seeker advisor');
+    });
 
     if (!session) {
       return res.status(404).json({ error: 'Active chat session not found' });
     }
 
-    // Determine sender and receiver based on userId and position
-    const sender = userId;
-    const receiver = position === 'right' ? session.advisor.userId : session.seeker.userId;
-
     const seekerMessage = new SeekerMessage({
-      sender: sender,
-      receiver: receiver,
-      text: text,
-      position: position,
+      sessionId: session._id,
+      senderId: userId,
+      text,
+      position,
       type: 'text',
       timestamp: new Date()
     });
@@ -78,7 +98,7 @@ router.post('/seeker-message/:userId', async (req, res) => {
     session.messages.push(seekerMessage);
     await session.save();
 
-    // Socket.IO emission if available
+    // Emit through socket if available
     if (req.app.get('io')) {
       req.app.get('io').to(session._id.toString()).emit('message', seekerMessage);
     }
@@ -86,10 +106,7 @@ router.post('/seeker-message/:userId', async (req, res) => {
     res.status(201).json(seekerMessage);
   } catch (error) {
     console.error('Message sending error:', error);
-    res.status(500).json({
-      error: 'Failed to send message',
-      details: error.message
-    });
+    res.status(500).json({ error: 'Failed to send message' });
   }
 });
 
@@ -98,69 +115,21 @@ router.get('/seeker-history/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    if (!userId || userId === 'undefined') {
-      return res.status(400).json({ error: 'Valid user ID required' });
-    }
-
-    const user = await User.findOne({ userId: userId });
+    const user = await User.findOne({ userId });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const seekerSessions = await SeekerChatSession.find({
-      $or: [
-        { seeker: user._id },
-        { advisor: user._id }
-      ]
-    }).populate('seeker advisor messages');
+    const sessions = await SeekerChatSession.find({
+      seeker: user._id
+    })
+    .populate('advisor messages')
+    .sort({ startTime: -1 });
 
-    res.json(seekerSessions);
+    res.json(sessions);
   } catch (error) {
     console.error('History fetch error:', error);
-    res.status(500).json({
-      error: 'Failed to fetch chat history',
-      details: error.message
-    });
-  }
-});
-
-// End chat session
-router.put('/seeker-session/:userId/:sessionId/end', async (req, res) => {
-  try {
-    const { userId, sessionId } = req.params;
-
-    if (!sessionId || sessionId === 'undefined') {
-      return res.status(400).json({ error: 'Valid session ID required' });
-    }
-
-    const session = await SeekerChatSession.findById(sessionId);
-    if (!session) {
-      return res.status(404).json({ error: 'Chat session not found' });
-    }
-
-    // Verify the user is part of this session
-    const user = await User.findOne({ userId: userId });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    if (session.seeker.toString() !== user._id.toString() && 
-        session.advisor.toString() !== user._id.toString()) {
-      return res.status(403).json({ error: 'User not authorized to end this session' });
-    }
-
-    session.endTime = new Date();
-    session.duration = (session.endTime - session.startTime) / 1000;
-    session.status = 'completed';
-    
-    await session.save();
-    res.json(session);
-  } catch (error) {
-    console.error('Session end error:', error);
-    res.status(500).json({
-      error: 'Failed to end chat session',
-      details: error.message
-    });
+    res.status(500).json({ error: 'Failed to fetch chat history' });
   }
 });
 

@@ -11,11 +11,10 @@ import 'react-chat-elements/dist/main.css';
 import axios from 'axios';
 
 const SOCKET_URL = 'http://localhost:5000';
-const API_URL = 'http://localhost:5000/advisor-chat';
+const API_URL = 'http://localhost:5000/api/advisor-chat';
 const socket = io(SOCKET_URL);
 
 function AdvisorChat() {
-  // States....
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [isTimerActive, setIsTimerActive] = useState(false);
@@ -23,6 +22,7 @@ function AdvisorChat() {
   const [chatHistory, setChatHistory] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Timer setup
   const initialTime = new Date();
@@ -35,50 +35,47 @@ function AdvisorChat() {
   });
 
   // Load chat history function
-  const loadChatHistory = async () => {
-    if (!currentUser) return;
+  const loadChatHistory = async (userId) => {
+    if (!userId) return;
 
     try {
-      const response = await axios.get(`${API_URL}/advisor-history`, {
-        params: { userId: currentUser._id }
-      });
+      const response = await axios.get(`${API_URL}/advisor-history/${userId}`);
       setChatHistory(response.data);
+      
+      if (response.data.length > 0) {
+        const latestSession = response.data[response.data.length - 1];
+        setMessages(latestSession.messages || []);
+      }
     } catch (error) {
-      console.error('Error loading chat history:', error.response?.data || error.message);
+      console.error('Error loading chat history:', error);
+      setError('Failed to load chat history');
     }
   };
 
   // Fetch current user effect
   useEffect(() => {
     const fetchCurrentUser = async () => {
+      // Get userId from session storage instead of email
+      const userId = sessionStorage.getItem('userId');
+      if (!userId) {
+        setLoading(false);
+        setError('No user ID found. Please log in again.');
+        return;
+      }
+
       try {
-        // First try Google
-        const googleResponse = await axios.get('/api/auth/google-current-user', {
-          params: {
-            email: sessionStorage.getItem('userEmail') // Get email from session storage
-          }
-        });
+        // Single endpoint to fetch user by ID
+        const response = await axios.get(`${API_URL}/advisor/${userId}`);
         
-        if (googleResponse.data.user) {
-          setCurrentUser(googleResponse.data.user);
-          setLoading(false);
-          return;
+        if (response.data.user) {
+          setCurrentUser(response.data.user);
+          await loadChatHistory(userId);
+        } else {
+          setError('User not found');
         }
-      } catch (googleError) {
-        // If Google fails, try Facebook
-        try {
-          const fbResponse = await axios.get('/api/auth/facebook-current-user', {
-            params: {
-              email: sessionStorage.getItem('userEmail') // Get email from session storage
-            }
-          });
-          
-          if (fbResponse.data.user) {
-            setCurrentUser(fbResponse.data.user);
-          }
-        } catch (fbError) {
-          console.error('Error fetching user:', fbError);
-        }
+      } catch (error) {
+        setError('Failed to authenticate user');
+        console.error('Error fetching user:', error);
       }
       setLoading(false);
     };
@@ -89,20 +86,19 @@ function AdvisorChat() {
   // Initialize chat session effect
   useEffect(() => {
     const initializeSession = async () => {
-      if (!currentUser || currentUser.userType !== 'advisor') return;
+      if (!currentUser?.userId || currentUser.userType !== 'advisor') return;
 
       try {
-        const response = await axios.post(`${API_URL}/advisor-session`, {
-          email: currentUser.email,
-          userId: currentUser._id,
-          seekerId: 'SEEKER_ID' // Get this from route params
+        const response = await axios.post(`${API_URL}/advisor-session/${currentUser.userId}`, {
+          advisorId: currentUser.userId,
+          seekerId: sessionStorage.getItem('currentSeekerId') || 'SEEKER_ID'
         });
         
         setAdvisorSession(response.data);
         socket.emit('join', response.data._id);
-        await loadChatHistory();
       } catch (error) {
         console.error('Error creating chat session:', error);
+        setError('Failed to create chat session');
       }
     };
 
@@ -111,8 +107,8 @@ function AdvisorChat() {
 
   // Socket message handling effect
   useEffect(() => {
-    socket.on('message', (msg) => {
-      setMessages(prevMessages => [...prevMessages, msg]);
+    socket.on('message', (message) => {
+      setMessages(prevMessages => [...prevMessages, message]);
     });
 
     return () => socket.off('message');
@@ -120,57 +116,56 @@ function AdvisorChat() {
 
   // Timer handling
   const handleTimerToggle = async () => {
-    if (!currentUser || !advisorSession) return;
+    if (!currentUser?.userId || !advisorSession?._id) return;
 
     if (isTimerActive) {
       pause();
       try {
-        await axios.put(`${API_URL}/advisor-session/${advisorSession._id}/end`, {
-          userId: currentUser._id,
-          email: currentUser.email
-        });
+        await axios.put(`${API_URL}/advisor-session/${currentUser.userId}/${advisorSession._id}/end`);
+        setIsTimerActive(false);
       } catch (error) {
         console.error('Error ending chat session:', error);
+        setError('Failed to end chat session');
       }
     } else {
       const newTime = new Date();
       newTime.setSeconds(newTime.getSeconds() + 3600);
       restart(newTime);
+      setIsTimerActive(true);
     }
-    setIsTimerActive(!isTimerActive);
   };
 
   // Send message
   const sendMessage = async () => {
-    if (!messageInput.trim() || !advisorSession || !currentUser) return;
-
-    const messageData = {
-      advisorSessionId: advisorSession._id,
-      advisorText: messageInput,
-      advisorPosition: 'right',
-      type: 'text',
-      userId: currentUser._id,
-      email: currentUser.email
-    };
+    if (!messageInput.trim() || !advisorSession?._id || !currentUser?.userId) return;
 
     try {
-      const response = await axios.post(`${API_URL}/advisor-message`, messageData);
-      socket.emit('message', { 
-        advisorSessionId: advisorSession._id, 
-        advisorMessage: response.data 
+      const response = await axios.post(`${API_URL}/advisor-message/${currentUser.userId}`, {
+        sessionId: advisorSession._id,
+        text: messageInput,
+        position: 'right'
       });
+
+      socket.emit('message', {
+        sessionId: advisorSession._id,
+        message: response.data
+      });
+
       setMessageInput('');
     } catch (error) {
       console.error('Error sending message:', error);
+      setError('Failed to send message');
     }
   };
 
-  // Loading state
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // Access check
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   if (!currentUser || currentUser.userType !== 'advisor') {
     return <div>Access denied. Only advisors can access this page.</div>;
   }

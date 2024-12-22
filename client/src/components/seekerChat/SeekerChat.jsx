@@ -8,6 +8,7 @@ import Advisor2 from '../../assets/Advisor2.jpg';
 import io from 'socket.io-client';
 import { MessageBox } from 'react-chat-elements';
 import 'react-chat-elements/dist/main.css'; // Import chat elements CSS..
+import axios from 'axios';
 
 const SeekerChatHistory = (props) => (
     <div className="SeekerChat-chat-history">
@@ -37,81 +38,136 @@ const SeekerChatHistoryContainer = (props) => (
     </div>
 );
 
-const socket = io('http://localhost:5000'); // Connect to your backend server
+const SOCKET_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:5000/api/seeker-chat';
+const socket = io(SOCKET_URL);
 
 function SeekerChat() {
-  const [messages, setMessages] = useState([
-    {
-        position: 'right',
-        type: 'text',
-        text: 'Hi, Hello Kasuni.',
-        date: new Date(),
-      },
-    {
-      position: 'left',
-      type: 'text',
-      text: 'Hello! How can I help you today?',
-      date: new Date(),
-    },
-    {
-      position: 'right',
-      type: 'text',
-      text: 'I need some advice regarding my career.',
-      date: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
+  const [messageInput, setMessageInput] = useState('');
+  const [seekerSession, setSeekerSession] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [currentAdvisor, setCurrentAdvisor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [messageInput, setMessageInput] = useState(''); // New state for the input message
-
-
-    // Set initial time to 0
-    const initialTime = new Date();
-    initialTime.setSeconds(initialTime.getSeconds()); // Start at 0
+  // Timer setup
+  const initialTime = new Date();
+  initialTime.setSeconds(initialTime.getSeconds());
   
-    // Use the react-timer-hook
-    const { seconds, minutes, hours } = useTimer({
-      expiryTimestamp: initialTime,
-      onExpire: () => console.warn("Timer expired"),
-      autoStart: false, // Start the timer manually
-    });
+  const { seconds, minutes, hours } = useTimer({
+    expiryTimestamp: initialTime,
+    onExpire: () => console.warn("Timer expired"),
+    autoStart: false,
+  });
 
-  useEffect(() => {
-    // Receive message from server
-    socket.on('message', (msg) => {
-        setMessages((prevMessages) => [...prevMessages, msg]);
-      });
+  // Load chat history
+  const loadChatHistory = async (userId) => {
+    if (!userId) return;
 
-    // Cleanup on component unmount
-    return () => {
-        socket.off('message');
-      };
-    }, []);
-
-  // Send message to server
-  const sendMessage = () => {
-    if (messageInput.trim()) { // Check if message input is not empty
-      const newMessage = {
-        position: 'right',
-        type: 'text',
-        text: messageInput,
-        date: new Date(),
-      };
+    try {
+      const response = await axios.get(`${API_URL}/seeker-history/${userId}`);
+      setChatHistory(response.data);
       
-      socket.emit('message', newMessage); // Emit the new message to the server
-      setMessages((prevMessages) => [...prevMessages, newMessage]); // Add to local messages
-      setMessageInput(''); // Clear the input field
+      if (response.data.length > 0) {
+        const latestSession = response.data[response.data.length - 1];
+        setMessages(latestSession.messages || []);
+      }
+    } catch (error) {
+      console.error('Error loading chat history:', error);
+      setError('Failed to load chat history');
     }
   };
 
-  const seekerChatsHis = [
-    {id: 1, title: 'Serenity Stone',message1:`Hello, I'm Shanaya`, message2:`How can I help you?`, imgUrl: 'https://unsplash.it/200/200'},
-    {id: 2, title: 'Michel Jackson',message1:`Hello, I'm Shanaya`, message2:`How can I help you?`, imgUrl: 'https://unsplash.it/201/200'},
-    {id: 3, title: 'Serenity Stone',message1:`Hello, I'm Shanaya`, message2:`How can I help you?`,  imgUrl: 'https://unsplash.it/200/201'},
-    {id: 4, title: 'Leo Doe',message1:`Hello, I'm Shanaya`, message2:`How can I help you?`,  imgUrl: 'https://unsplash.it/200/199'},
-    {id: 5, title: 'Jony Dep',message1:`Hello, I'm Shanaya`, message2:`How can I help you?`,  imgUrl: 'https://unsplash.it/200/198'},
-    {id: 6, title: 'Karoline Jude',message1:`Hello, I'm Shanaya`, message2:`How can I help you?`,  imgUrl: 'https://unsplash.it/200/200'},
-    {id: 7, title: 'charle Jhosep',message1:`Hello, I'm Shanaya`, message2:`How can I help you?`,  imgUrl: 'https://unsplash.it/200/201'},  
-  ];
+  // Fetch current user
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const userId = sessionStorage.getItem('userId');
+      if (!userId) {
+        setLoading(false);
+        setError('No user ID found. Please log in again.');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${API_URL}/seeker/${userId}`);
+        if (response.data.user) {
+          setCurrentUser(response.data.user);
+          await loadChatHistory(userId);
+        } else {
+          setError('User not found');
+        }
+      } catch (error) {
+        setError('Failed to authenticate user');
+        console.error('Error fetching user:', error);
+      }
+      setLoading(false);
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  // Initialize chat session
+  useEffect(() => {
+    const initializeSession = async () => {
+      if (!currentUser?.userId || currentUser.userType !== 'seeker') return;
+
+      try {
+        const response = await axios.post(`${API_URL}/seeker-session/${currentUser.userId}`, {
+          seekerId: currentUser.userId,
+          advisorId: sessionStorage.getItem('currentAdvisorId') // Should be set when selecting an advisor
+        });
+        
+        setSeekerSession(response.data);
+        setCurrentAdvisor(response.data.advisor);
+        socket.emit('join', response.data._id);
+      } catch (error) {
+        console.error('Error creating chat session:', error);
+        setError('Failed to create chat session');
+      }
+    };
+
+    initializeSession();
+  }, [currentUser]);
+
+  // Socket message handling
+  useEffect(() => {
+    socket.on('message', (message) => {
+      setMessages(prevMessages => [...prevMessages, message]);
+    });
+
+    return () => socket.off('message');
+  }, []);
+
+  // Send message
+  const sendMessage = async () => {
+    if (!messageInput.trim() || !seekerSession?._id || !currentUser?.userId) return;
+
+    try {
+      const response = await axios.post(`${API_URL}/seeker-message/${currentUser.userId}`, {
+        sessionId: seekerSession._id,
+        text: messageInput,
+        position: 'right'
+      });
+
+      socket.emit('message', {
+        sessionId: seekerSession._id,
+        message: response.data
+      });
+
+      setMessageInput('');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setError('Failed to send message');
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!currentUser || currentUser.userType !== 'seeker') {
+    return <div>Access denied. Only seekers can access this page.</div>;
+  }
 
   return (
     <div className='SeekerChat-main'>
@@ -124,8 +180,12 @@ function SeekerChat() {
         <div className='SeekerChat-Middlecontainer'>
           <div className='SeekerChat-Middlecontainer-top'>
             <div className='SeekerChat-Middlecontainer-top1'>
-              <img className='SeekerChat-Middlecontainer-proPick' src={Advisor2} alt="Advisor" />
-              <h2>Kasun Gayantha</h2>
+              <img 
+                className='SeekerChat-Middlecontainer-proPick' 
+                src={currentAdvisor?.profilePhotoUrl || Advisor2} 
+                alt="Advisor" 
+              />
+              <h2>{currentAdvisor?.name || 'Select an Advisor'}</h2>
               <div className='SeekerChat-Status'></div>
             </div>
             <div className='SeekerChat-Middlecontainer-top2'>
@@ -137,33 +197,39 @@ function SeekerChat() {
           <hr />
           <div className='SeekerChat-Middlecontainer-bottom'>
             <div className='SeekerChat-chatwindow'>
-                {messages.map((message, index) => (
+              {messages.map((message, index) => (
                 <MessageBox
-                    key={index}
-                    position={message.position}
-                    type={message.type}
-                    text={message.text}
-                    date={message.date}
+                  key={index}
+                  position={message.position}
+                  type={message.type}
+                  text={message.text}
+                  date={message.date}
                 />
-                ))} 
+              ))}
             </div>
             <div className='chat-input'>
               <input
                 type='text'
-                value={messageInput} // Bind the input value to the messageInput state
-                onChange={(e) => setMessageInput(e.target.value)} // Update the message input state on change
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
                 placeholder='Type a message...'
+                disabled={!seekerSession}
               />
-              <button onClick={sendMessage}>Send</button>
+              <button 
+                onClick={sendMessage}
+                disabled={!seekerSession || !messageInput.trim()}
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
         <hr />
         <div className='SeekerChat-RightContainer'>
-            <h3>Chat History</h3>
-            <div className='SeekerChat-chat-history-content'>
-                <SeekerChatHistoryContainer reviews={ seekerChatsHis } />
-            </div>      
+          <h3>Chat History</h3>
+          <div className='SeekerChat-chat-history-content'>
+            <SeekerChatHistoryContainer reviews={chatHistory} />
+          </div>
         </div>
       </div>
       <Footer />
