@@ -31,7 +31,7 @@ function LoginFB() {
           name: response.name,
           userType: userType,
         }),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       // Parse the response
@@ -42,7 +42,9 @@ function LoginFB() {
         throw new Error(data.error || 'Authentication failed');
       }
 
-      if (data.user) {
+      if (data.token) {
+        // Store the token in localStorage
+        localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         navigate(data.redirectTo);
       } else {
@@ -59,18 +61,51 @@ function LoginFB() {
     setError(null); // Clear any previous errors when switching user type
   };
 
+  // Example of using the token in an authenticated request
+  const fetchProtectedData = async () => {
+    const token = localStorage.getItem('token'); // Retrieve the token
+    if (!token) {
+      setError('No token found. Please log in again.');
+      return;
+    }
+
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/google-current-user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Attach the token
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to fetch protected data');
+      }
+
+      console.log('Protected data:', data);
+    } catch (error) {
+      console.error('Error fetching protected data:', error);
+      setError(error.message || 'Failed to fetch protected data');
+    }
+  };
+
   return (
     <div className="login-container">
-      <h2 className='signintitle'>Sign In</h2>
+      <h2 className="signintitle">Sign In</h2>
       {error && (
-        <div className="error-message" style={{ 
-          color: '#ff3333',
-          backgroundColor: '#ffebeb',
-          padding: '10px',
-          borderRadius: '4px',
-          marginBottom: '15px',
-          textAlign: 'center'
-        }}>
+        <div
+          className="error-message"
+          style={{
+            color: '#ff3333',
+            backgroundColor: '#ffebeb',
+            padding: '10px',
+            borderRadius: '4px',
+            marginBottom: '15px',
+            textAlign: 'center',
+          }}
+        >
           {error}
         </div>
       )}
@@ -106,6 +141,13 @@ function LoginFB() {
           />
         )}
       </div>
+      {localStorage.getItem('token') && (
+        <div className="fetch-data-section">
+          <button className="fetch-protected-data-button" onClick={fetchProtectedData}>
+            Fetch Protected Data
+          </button>
+        </div>
+      )}
     </div>
   );
 }

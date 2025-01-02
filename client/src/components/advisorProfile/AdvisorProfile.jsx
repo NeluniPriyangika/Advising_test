@@ -46,7 +46,8 @@ function AdvisorProfile() {
   
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
-    
+    const token = localStorage.getItem('token'); 
+
     const fetchAdvisorData = async () => {
       try {
         console.log('Current user:', currentUser); // Debug log
@@ -58,7 +59,14 @@ function AdvisorProfile() {
 
         console.log('Fetching advisor data for userId:', userId); // Debug log
 
-        const response = await fetch(`http://localhost:5000/api/advisor-profile/${userId}`);
+        const response = await fetch(`http://localhost:5000/api/advisor-profile/${userId}`,
+        { method: 'GET',
+          headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Add JWT token here
+          },
+        }
+        );
         console.log('Response status:', response.status); // Debug log
 
         if (!response.ok) {

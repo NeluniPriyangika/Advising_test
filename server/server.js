@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
+const authenticateJWT = require('./middleware/authMiddleware');
 
 dotenv.config();
 
@@ -99,6 +100,12 @@ app.use('/api/advisor-chat', advisorChatRoutes); // Changed to /api/advisor-chat
 app.use('/api/seeker-chat', seekerChatRoutes); // Add this line
 app.use('/api', advisorProfileRoutes);
 app.use('/api', seekerProfileRoutes);
+
+
+// Protected route example
+app.get('/protected', authenticateJWT, (req, res) => {
+  res.send(`Hello ${req.user.email}, this is a protected route.`);
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

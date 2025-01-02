@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const fetch = require('node-fetch');
+const jwt = require('jsonwebtoken'); // Import JWT library
 const User = require('../models/user');
 
+// POST: Facebook Login
 router.post('/facebook-login', async (req, res) => {
   console.log('Received Facebook login request:', req.body);
 
@@ -11,9 +13,7 @@ router.post('/facebook-login', async (req, res) => {
 
     // Validate required fields
     if (!accessToken || !userID || !email || !name || !userType) {
-      return res.status(400).json({
-        error: 'Missing required fields'
-      });
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
     // Verify Facebook token
@@ -22,95 +22,51 @@ router.post('/facebook-login', async (req, res) => {
     const tokenData = await tokenResponse.json();
 
     if (!tokenData.data || !tokenData.data.is_valid) {
-      return res.status(400).json({
-        error: 'Invalid Facebook token'
-      });
+      return res.status(400).json({ error: 'Invalid Facebook token' });
     }
 
     // Get additional user data from Facebook
     const fbUserResponse = await fetch(`https://graph.facebook.com/v19.0/${userID}?fields=id,name,email,picture&access_token=${accessToken}`);
     const fbUserData = await fbUserResponse.json();
 
-    // Check if user exists with this Facebook ID
+    // Check if user exists
     let user = await User.findOne({ userId: userID });
-
-    // If user exists, check if they're trying to sign up with a different userType
-    if (user && user.userType !== userType) {
-      return res.status(400).json({
-        error: `This Facebook account is already registered as a ${user.userType}. Please use a different Facebook account to register as a ${userType}.`
-      });
-    }
-
-    // If no user found with Facebook ID, check email
-    if (!user) {
-      user = await User.findOne({ email: email });
-      if (user) {
-        return res.status(400).json({
-          error: `This email is already registered as a ${user.userType}. Please use a different email address to register as a ${userType}.`
-        });
-      }
-    }
-
     let isNewUser = false;
 
     if (!user) {
-      // Create new user with Facebook data
-      const userData = {
+      // Create new user
+      user = new User({
         userId: userID,
         email,
         name,
         userType,
         profilePhotoUrl: fbUserData.picture?.data?.url,
         profileCompleted: false,
-        socialLinks: {
-          facebook: `https://facebook.com/${userID}`
-        }
-      };
-
-      try {
-        user = new User(userData);
-        await user.save();
-        console.log('New user created:', user);
-        isNewUser = true;
-      } catch (saveError) {
-        console.error('Error saving new user:', saveError);
-        return res.status(500).json({
-          error: 'Failed to create user account'
-        });
-      }
+        socialLinks: { facebook: `https://facebook.com/${userID}` },
+      });
+      await user.save();
+      isNewUser = true;
     } else {
-      // Update existing user's Facebook data if needed
-	  // Update existing user's Facebook data
-    if (!user.userId || !user.profilePhotoUrl) {
-      user.userId = userID;
-      user.profilePhotoUrl = fbUserData.picture?.data?.url;
-      user.socialLinks = {
-        ...user.socialLinks,
-        facebook: `https://facebook.com/${userID}`
-      };
-
-        try {
-          await user.save();
-          console.log('Existing user updated:', user);
-        } catch (updateError) {
-          console.error('Error updating user:', updateError);
-          return res.status(500).json({
-            error: 'Failed to update user account'
-          });
-        }
+      // Update existing user if necessary
+      if (!user.profilePhotoUrl) {
+        user.profilePhotoUrl = fbUserData.picture?.data?.url;
+        user.socialLinks.facebook = `https://facebook.com/${userID}`;
+        await user.save();
       }
     }
 
-    let redirectTo;
-      if (isNewUser || !user.profileCompleted) {
-        // New user or existing user with incomplete profile
-        redirectTo = userType === 'advisor' ? `/advisor-update-profile/${userID}` : `/seeker-update-profile/${userID}`;
-      } else {
-        // Existing user with completed profile
-        redirectTo = user.userType === 'advisor' ? `/advisor-profile/${user.userId}` : `/seeker-profile/${user.userId}`;
-      }
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user.userId, email: user.email, userType: user.userType },
+      process.env.JWT_SECRET, // Secure secret key
+      { expiresIn: '1h' } // Token expiration
+    );
 
-    // Send response
+    // Determine redirect path
+    const redirectTo = isNewUser || !user.profileCompleted
+      ? userType === 'advisor' ? `/advisor-update-profile/${userID}` : `/seeker-update-profile/${userID}`
+      : user.userType === 'advisor' ? `/advisor-profile/${user.userId}` : `/seeker-profile/${user.userId}`;
+
     return res.status(200).json({
       user: {
         id: user._id,
@@ -118,32 +74,42 @@ router.post('/facebook-login', async (req, res) => {
         email: user.email,
         userType: user.userType,
         profileCompleted: user.profileCompleted,
-        profilePhotoUrl: user.profilePhotoUrl
+        profilePhotoUrl: user.profilePhotoUrl,
       },
+      token,
       redirectTo,
-      isNewUser
+      isNewUser,
     });
-
   } catch (error) {
-    console.error('Facebook authentication error:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name
-    });
-
-    return res.status(500).json({
-      error: error.message || 'Authentication failed'
-    });
+    console.error('Facebook authentication error:', error);
+    return res.status(500).json({ error: 'Authentication failed' });
   }
 });
 
-// Add this new route to your existing fb-auth.js
-router.get('/facebook-current-user', async (req, res) => {
+// Middleware: Verify JWT
+const authenticateToken = (req, res, next) => {
+  const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token is missing' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+    req.user = user; // Attach decoded user info to request
+    next();
+  });
+};
+
+// GET: Fetch Facebook Current User (Protected Route)
+router.get('/facebook-current-user', authenticateToken, async (req, res) => {
   try {
     const { email, userId } = req.query;
-    
-    let user = await User.findOne(userId ? { userId } : { email });
-    
+
+    const user = await User.findOne(userId ? { userId } : { email });
+
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
