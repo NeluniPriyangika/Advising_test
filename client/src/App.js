@@ -17,6 +17,7 @@ import AdvisorChatPage from './pages/advisorChatPage/AdvisorChatPage';
 import AdvisorPublicChatPage from './pages/advisorPublicChatPage/AdvisorPublicChatPage';
 import PaymentPage from './pages/paymentPage/PaymentPage';
 import PrivacyPolicyPage from './pages/privacyPolicyPage/PrivacyPolicyPage';
+import AdvisorsPage from './pages/advisorPage/AdvisorsPage';
 
 
 // PrivateRoute component
@@ -52,6 +53,7 @@ const App = () => {
           <Route path="/advisor-public-chat" element={<PrivateRoute>< AdvisorPublicChatPage/></PrivateRoute> } />
           <Route path="/payment" element={<PrivateRoute>< PaymentPage/></PrivateRoute> } />
           <Route path="/privacy-policy" element={<PrivateRoute>< PrivacyPolicyPage/></PrivateRoute> } />
+          <Route path="/advisors" element={<PrivateRoute>< AdvisorsPage/></PrivateRoute> } />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

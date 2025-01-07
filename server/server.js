@@ -88,7 +88,8 @@ const chatRoutes = require('./routes/chatRoutes');
 const advisorChatRoutes = require('./routes/adviorChatRoute');
 const seekerChatRoutes = require('./routes/seekerChatRoute');
 const advisorProfileRoutes = require('./routes/advisorprofile');
-const seekerProfileRoutes = require('./routes/seekerprofile')
+const seekerProfileRoutes = require('./routes/seekerprofile');
+const advisorRoutes = require('./routes/getAdvisors');
 
 // Apply routes
 app.use('/api/auth', authRoutes);
@@ -100,6 +101,7 @@ app.use('/api/advisor-chat', advisorChatRoutes); // Changed to /api/advisor-chat
 app.use('/api/seeker-chat', seekerChatRoutes); // Add this line
 app.use('/api', advisorProfileRoutes);
 app.use('/api', seekerProfileRoutes);
+app.use('/api', advisorRoutes);
 
 
 // Protected route example

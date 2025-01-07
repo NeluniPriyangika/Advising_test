@@ -121,4 +121,65 @@ router.get('/facebook-current-user', authenticateToken, async (req, res) => {
   }
 });
 
+// GET: Fetch Facebook Current Advisors (Protected Route)
+router.get('/facebook-advisors', authenticateToken, async (req, res) => {
+  try {
+    const { userType } = req.query;
+
+    // Validate userType (ensure it's 'advisor')
+    if (userType !== 'advisor') {
+      return res.status(400).json({ error: 'Invalid user type' });
+    }
+
+    // Fetch advisors who logged in via Facebook
+    const advisors = await User.find({ userType: 'advisor', socialLinks: { $exists: true, $ne: null } });
+
+    if (!advisors || advisors.length === 0) {
+      return res.status(404).json({ error: 'No advisors found' });
+    }
+
+    res.json({ advisors });
+  } catch (error) {
+    console.error('Error fetching Facebook advisors:', error);
+    res.status(500).json({ error: 'Failed to fetch advisors' });
+  }
+});
+
+/*/ GET: Fetch Facebook Advisors (with rating) - Protected Route
+router.get('/facebook-advisors', authenticateToken, async (req, res) => {
+  try {
+    const { email, userId } = req.query;
+
+    // Fetch advisors by userId or email, and make sure they are 'advisor' and have completed profile
+    let advisors = await User.find({
+      $or: [{ userId }, { email }],
+      userType: 'advisor',
+      profileCompleted: true, // Ensure profile is completed
+      socialLinks: { facebook: { $exists: true } }, // Ensure they have Facebook link
+    });
+
+    if (!advisors || advisors.length === 0) {
+      return res.status(404).json({ error: 'No advisors found' });
+    }
+
+    // Map data to include rating and other necessary fields
+    const responseData = advisors.map(advisor => ({
+      id: advisor._id,
+      homeRating: advisor.rating || 0, // Include rating here, default to 0 if not available
+      title: advisor.name || 'Advisor', // Title fallback
+      subtitle: advisor.qualifications || 'Psychic Reading, Astrology, Tarot Readings',
+      personalDes: advisor.description || 'Lorem Ipsum is simply dummy text...',
+      content: advisor.displayName || 'Unknown User',
+      timeText: `${advisor.perMinuteRate} for 5 minutes`,
+      imgUrl: advisor.profilePhotoUrl || 'https://unsplash.it/200/200', // Default image URL
+    }));
+
+    res.status(200).json({ advisors: responseData });
+  } catch (error) {
+    console.error('Error fetching Facebook advisors:', error);
+    res.status(500).json({ error: 'Failed to fetch Facebook advisor data' });
+  }
+});*/
+
+
 module.exports = router;
