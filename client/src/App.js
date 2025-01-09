@@ -6,6 +6,7 @@ import LoginPage from './pages/loginPage/LoginPage';
 import LoginPage1 from './pages/loginPage1/LoginPage1';
 import LoginFBPage from './pages/LoginFBPage/LoginFBPage';
 import SeekerHomePage from './pages/seekerHomePage/SeekerHomePage';
+
 import AdvisorUpdateProfilePage from './pages/advisorUpdateProfilePage/AdvisorUpdateProfilePage';
 import SeekerUpdateProfilePage from './pages/seekerUpdateProfilePage/SeekerUpdateProfilePage';
 import AdvisorProfilePage from './pages/advisorProfilePage/AdvisorProfilePage';
@@ -18,6 +19,7 @@ import AdvisorPublicChatPage from './pages/advisorPublicChatPage/AdvisorPublicCh
 import PaymentPage from './pages/paymentPage/PaymentPage';
 import PrivacyPolicyPage from './pages/privacyPolicyPage/PrivacyPolicyPage';
 import AdvisorsPage from './pages/advisorPage/AdvisorsPage';
+import SeekersPage from './pages/seekersPage/SeekersPage';
 
 
 // PrivateRoute component
@@ -54,6 +56,134 @@ const App = () => {
           <Route path="/payment" element={<PrivateRoute>< PaymentPage/></PrivateRoute> } />
           <Route path="/privacy-policy" element={<PrivateRoute>< PrivacyPolicyPage/></PrivateRoute> } />
           <Route path="/advisors" element={<PrivateRoute>< AdvisorsPage/></PrivateRoute> } />
+
+
+          {/* Advisor Routes */}
+          <Route path="/advisor-profile/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorProfilePage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/advisor-public-profile/:advisorId" element={
+            <AdvisorProfilePage />
+          } />
+
+          <Route path="/advisor-home/:userId" element={
+            <PrivateRoute>
+              <HomePage />
+            </PrivateRoute>
+          } />
+          <Route path="/advisor-messages/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorChatPage />
+            </PrivateRoute>
+          } />
+          <Route path="/advisor-public-chat/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorPublicChatPage />
+            </PrivateRoute>
+          } />
+          <Route path="/advisor-find-seekers/:advisorId" element={
+            <PrivateRoute>
+              <SeekersPage />
+            </PrivateRoute>
+          } />
+          {/*<Route path="/advisor-my-seekers/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorMySeekersPage />
+            </PrivateRoute>
+          } />
+          <Route path="/advisor-earnings/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorEarningsPage />
+            </PrivateRoute>
+          } />
+          <Route path="/advisor-payments/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorPaymentsPage />
+            </PrivateRoute>
+          } />*/}
+          
+          {/* Help Routes */}
+          {/*<Route path="/advisor-help/:section/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorHelpPage />
+            </PrivateRoute>
+          } />*/}
+          
+          {/* Settings Routes */}
+          {/*<Route path="/advisor-settings/:section/:advisorId" element={
+            <PrivateRoute>
+              <AdvisorSettingsPage />
+            </PrivateRoute>
+          } />*/}
+
+
+          {/* Seeker Routes */}
+          <Route path="/seeker-profile/:seekerId" element={
+            <PrivateRoute>
+              <SeekerProfilePage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/seeker-public-profile/:seekerId" element={<SeekerProfilePage />} />
+
+          <Route path="/seeker-home/:seekerId" element={
+            <PrivateRoute>
+              <HomePage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/seeker-messages/:seekerId" element={
+            <PrivateRoute>
+              <SeekerChatPage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/seeker-find-advisors/:seekerId" element={
+            <PrivateRoute>
+              <AdvisorsPage />
+            </PrivateRoute>
+          } />
+
+          {/*<Route path="/seeker-public-chat/:seekerId" element={
+            <PrivateRoute>
+              <SeekerPublicChatPage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/seeker-my-advisors/:seekerId" element={
+            <PrivateRoute>
+              <SeekerMyAdvisorsPage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/seeker-expenses/:seekerId" element={
+            <PrivateRoute>
+              <SeekerExpensesPage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/seeker-notes/:seekerId" element={
+            <PrivateRoute>
+              <SeekerNotesPage />
+            </PrivateRoute>
+          } />
+
+          <Route path="/seeker-help/:section/:seekerId" element={
+            <PrivateRoute>
+              <SeekerHelpPage />
+            </PrivateRoute>
+          } />
+
+      
+          <Route path="/seeker-settings/:section/:seekerId" element={
+            <PrivateRoute>
+              <SeekerSettingsPage />
+            </PrivateRoute>
+          } /> */}
+          
         </Routes>
       </Router>
     </GoogleOAuthProvider>

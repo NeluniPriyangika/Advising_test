@@ -21,7 +21,7 @@ router.get('/advisors', async (req, res) => {
       title: advisor.fullName || 'Advisor',
       subtitle: advisor.qualifications || 'Psychic Reading, Astrology, Tarot Readings',
       personalDes: advisor.description || 'No description available',
-      timeText: `$${advisor.perMinuteRate || 0} per minute`,
+      timeText: `$ ${advisor.perMinuteRate || 0} per minute`,
       imgUrl: advisor.profilePhotoUrl || '/default-avatar.png'
     }));
 

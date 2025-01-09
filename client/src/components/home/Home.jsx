@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import './home.css';
 import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import ReadOnlyRating from '../readOnlyRating/ReadOnlyRating';
 import axios from 'axios';
 
-const Card = ({ imgUrl, timeText, title, subtitle, personalDes }) => (
-  <div className="card">
+const Card = ({ imgUrl, timeText, title, subtitle, personalDes, onClick }) => (
+  <div className="card" onClick={onClick}>
     <div className='card-content1'>
       <img 
         src={imgUrl} 
         alt={title} 
         onError={(e) => {
-          e.target.src = '/default-avatar.png'; // Fallback image
+          e.target.src = '/default-avatar.png';
         }}
       />
       <p>{timeText}</p>
@@ -26,12 +27,13 @@ const Card = ({ imgUrl, timeText, title, subtitle, personalDes }) => (
   </div>
 );
 
-const CardContainer = ({ cards }) => (
+const CardContainer = ({ cards, onCardClick }) => (
   <div className="cards-container">
     {cards.map((card) => (
       <Card
-        key={card.id}
+        key={card._id}
         {...card}
+        onClick={() => onCardClick(card._id)}
       />
     ))}
   </div>
@@ -41,6 +43,8 @@ function Home() {
   const [advisors, setAdvisors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const params = useParams(); // Get URL parameters
 
   useEffect(() => {
     const fetchAdvisors = async () => {
@@ -58,17 +62,50 @@ function Home() {
     fetchAdvisors();
   }, []);
 
+  const handleCardClick = (advisorId) => {
+    const user = localStorage.getItem('user');
+    
+    if (user) {
+      const userData = JSON.parse(user);
+      
+      if (userData.userType === 'advisor') {
+        // If the logged-in advisor is viewing their own profile
+        if (userData._id === advisorId) {
+          navigate(`/advisor-profile/${advisorId}`);
+        } else {
+          // If an advisor is viewing another advisor's profile
+          navigate(`/advisor-public-profile/${advisorId}`);
+        }
+      } else if (userData.userType === 'seeker') {
+        // If a seeker is viewing an advisor's profile
+        navigate(`/advisor-public-profile/${advisorId}`);
+      }
+    } else {
+      // If user is not logged in, redirect to login
+      navigate('/login', {
+        state: { 
+          redirectTo: `/advisor-public-profile/${advisorId}`
+        }
+      });
+    }
+  };
+
+  // Determine if we're on a specific user's home page
+  const isUserSpecificHome = params.userId || params.seekerId || params.advisorId;
+
   return (
     <div className='homemain'>
       <Navbar />
       <div className='homebgimage'>
         <div className='homemaintext'>
           <div className='welcometext'>WELCOME</div>
-          <div className='username'>To</div>
+          <div className='username'>
+            {isUserSpecificHome ? 'Back' : 'To'}
+          </div>
         </div>
         <h1 className='sitename'>Spiritual Insights</h1>
       </div>
-      
+
       <div className='home-find-advisors-container'>
         <div className="home-find-advisors-container-card-container">
           <h1>Find Advisors</h1>
@@ -80,11 +117,14 @@ function Home() {
           ) : advisors.length === 0 ? (
             <div className="no-advisors">No advisors available at the moment</div>
           ) : (
-            <CardContainer cards={advisors} />
+            <CardContainer 
+              cards={advisors}
+              onCardClick={handleCardClick}
+            />
           )}
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );

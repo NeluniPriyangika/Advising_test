@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-
-import Navbar from '../navbar/Navbar';
 import Footer from '../footer/Footer';
 import ReadOnlyRating from '../readOnlyRating/ReadOnlyRating';
 import axios from 'axios';
+import Navbar2 from '../navbar2/Navbar2';
 
 const Card = (props) => (
     <div className="card">
@@ -65,7 +64,7 @@ function Advisors() {
   
     return (
       <div className='homemain'>
-        <Navbar />
+        <Navbar2/>
         <div className='home-find-advisors-container'>
           <div className="home-find-advisors-container-card-container">
             <h1 style={{ 'text-align': "start" }}>

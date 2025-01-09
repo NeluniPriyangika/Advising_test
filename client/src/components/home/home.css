@@ -82,6 +82,7 @@
     color: rgb(255, 106, 0);
     min-height: 100%;
     min-width: 100%;
+    margin-top: 100px;
 }
 
 .home-find-advisors-container-card-container {
@@ -112,7 +113,8 @@
     overflow: hidden;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 250ms ease-in-out;
+    transition: transform 0.2s ease-in-out;
+
     
     img {
       width: 100px;
@@ -122,8 +124,8 @@
     }
     
     &:hover {
-      box-shadow: 0 4px 1rem -4px #000;
-      transform: translateY(-3px);
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -183,6 +185,7 @@
     
     .card {
       margin: .5rem;
+      
     }
   }
 
