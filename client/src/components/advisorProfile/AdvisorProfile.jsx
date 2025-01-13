@@ -43,6 +43,8 @@ function AdvisorProfile() {
   const [advisor, setAdvisor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [currentUserType, setCurrentUserType] = useState(null);
   
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -87,6 +89,15 @@ function AdvisorProfile() {
 
     fetchAdvisorData();
   }, [userId]);
+
+    // Function to determine if the messaging button should be shown
+    const shouldShowMessageButton = () => {
+      // Don't show if it's the advisor's own profile
+      if (isOwnProfile) return false;
+      
+      // Only show if the viewer is a seeker
+      return currentUserType === 'seeker';
+    };
 
 
   if (loading) return <div>Loading...</div>;
@@ -148,12 +159,15 @@ function AdvisorProfile() {
                   alt={advisor.name} 
                 />
               </div>
-              <button 
-                className='advisorprofile-messagingbutton' 
-                onClick={() => navigate('/seeker-middle-chat')}
-              >
-                Start Messaging
-              </button>
+              {/* Conditional rendering of the message button */}
+              {shouldShowMessageButton() && (
+                <button 
+                  className='advisorprofile-messagingbutton' 
+                  onClick={() => navigate('/seeker-middle-chat')}
+                >
+                  Start Messaging
+                </button>
+              )}
               <h2 className='advisorprofile-perminuterate'>
                 {advisor.ratePerMinute} USD / 1 min
               </h2>
